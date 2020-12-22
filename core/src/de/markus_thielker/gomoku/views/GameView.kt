@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import de.markus_thielker.gomoku.Application
+import de.markus_thielker.gomoku.components.GomokuConfiguration
+import de.markus_thielker.gomoku.components.GomokuGame
 import java.util.*
 
 /**
@@ -21,12 +23,13 @@ import java.util.*
  * @author Markus Thielker
  *
  */
-class GameView(private val application : Application /* TODO: parameter for configuration */) : ScreenAdapter() {
+class GameView(private val application : Application, config : GomokuConfiguration) : ScreenAdapter() {
 
-    // TODO: instance of game as var
-
-    private val scanner = Scanner(System.`in`)
+    private val gameplay = GomokuGame(config)
     private var gamePaused = false
+
+    // scanner for input simulation
+    private val scanner = Scanner(System.`in`)
 
     private lateinit var stageGame : Stage
     private lateinit var btnGamePause : TextButton
@@ -43,7 +46,7 @@ class GameView(private val application : Application /* TODO: parameter for conf
         Gdx.input.inputProcessor = stageGame
 
         // create game view pause button
-        btnGamePause = TextButton("II", application.skin)
+        btnGamePause = TextButton("II", application.skin) // TODO: change string to icon
         btnGamePause.setSize(30f, 30f)
         btnGamePause.setPosition((Gdx.graphics.width - 30).toFloat(), (Gdx.graphics.height - 30).toFloat())
         btnGamePause.addListener(object : ClickListener() {
@@ -68,9 +71,16 @@ class GameView(private val application : Application /* TODO: parameter for conf
         stageGame.act()
         stageGame.draw()
 
-        // PREPARATION TO SIMULATE INPUT VIA CONSOLE
+        // SIMULATE INPUT VIA CONSOLE
         if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE) && !gamePaused) {
-            // TODO: communicate with game logic
+
+            print("x: ")
+            val inY = Integer.parseInt(scanner.nextLine()) - 1
+
+            print("y: ")
+            val inX = Integer.parseInt(scanner.nextLine()) - 1
+
+            gameplay.stonePlaced(inX, inY) // flipped [x,y] due to debugging print direction
         }
     }
 
