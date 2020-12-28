@@ -10,11 +10,11 @@ class GomokuGame(config : GomokuConfiguration) {
 
     private val board = Array(15) { Array(15) { GomokuField.None } }
 
-    private var roundCounter = 1
-    private var playerOneTurn = true
-
     private var playerOne : GomokuPlayer = GomokuPlayer(config.playerNameOne, config.playerColorOne)
     private var playerTwo : GomokuPlayer = GomokuPlayer(config.playerNameTwo, config.playerColorTwo)
+
+    private var currentPlayer = playerOne
+    private var round = 1
 
     // TODO: remove debugging function
     init {
@@ -37,12 +37,22 @@ class GomokuGame(config : GomokuConfiguration) {
 
         if (board[x][y] == GomokuField.None) {
 
-            if (playerOneTurn) {
-                playerOne.updateState(arrayOf(x, y), 1, null)
-                board[x][y] = playerOne.color
-            } else {
-                playerTwo.updateState(arrayOf(x, y), 1, null)
-                board[x][y] = playerTwo.color
+            // set clicked field to players color
+            board[x][y] = currentPlayer.color
+
+            // evaluate if new stone leads to a winner
+            val won : Boolean? = winningCondition(arrayOf(x, y), currentPlayer)
+
+            // evaluate longest line for current player
+            val longestLine = longestLine(arrayOf(x, y), currentPlayer)
+
+            // push updates to player instance
+            currentPlayer.updateState(arrayOf(x, y), longestLine, won)
+
+            // in case somebody won notify player instances
+            won?.let {
+                if (currentPlayer == playerOne) playerTwo.updateState(arrayOf(-1, -1), -1, false)
+                else playerOne.updateState(arrayOf(-1, -1), -y, false)
             }
 
             printBoard() // TODO: remove debugging call
@@ -61,16 +71,18 @@ class GomokuGame(config : GomokuConfiguration) {
      *
      * */
     private fun switchTurn() {
-        playerOneTurn = !playerOneTurn
-        roundCounter++
+        currentPlayer = if (currentPlayer == playerOne) playerTwo else playerOne
+        round++
     }
 
-    private fun winningCondition(player : GomokuPlayer) {
-        // TODO: check for winning condition
-    }
-
-    private fun longestLine(player : GomokuPlayer) {
+    private fun winningCondition(position : Array<Int>, player : GomokuPlayer) : Boolean? {
         // TODO: check for longest line
+        return null
+    }
+
+    private fun longestLine(position : Array<Int>, player : GomokuPlayer) : Int {
+        // TODO: check for longest line
+        return 0
     }
 
     // TODO: remove debugging function
