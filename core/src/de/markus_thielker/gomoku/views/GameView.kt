@@ -3,13 +3,19 @@ package de.markus_thielker.gomoku.views
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.ScreenAdapter
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.utils.viewport.ScreenViewport
+import com.badlogic.gdx.utils.viewport.Viewport
 import de.markus_thielker.gomoku.Application
 import de.markus_thielker.gomoku.components.GomokuConfiguration
 import de.markus_thielker.gomoku.components.GomokuGame
@@ -25,24 +31,48 @@ import java.util.*
  */
 class GameView(private val application : Application, config : GomokuConfiguration) : ScreenAdapter() {
 
+    // game interaction essentials
     private val gameplay = GomokuGame(config)
     private var gamePaused = false
 
     // scanner for input simulation
     private val scanner = Scanner(System.`in`)
 
+    // widgets for game visualization
     private lateinit var stageGame : Stage
     private lateinit var btnGamePause : TextButton
+    private lateinit var camera : OrthographicCamera
+    private lateinit var viewport : Viewport
+    private lateinit var batch : SpriteBatch
+    private lateinit var shapeRenderer : ShapeRenderer
 
+    // widgets for pause dialog
     private lateinit var dialogPause : Dialog
     private lateinit var lblPauseHeading : Label
     private lateinit var btnPauseContinue : TextButton
     private lateinit var btnPauseBack : TextButton
 
+    // grid dimensions
+    private val gridSize = 15
+    private val padding = 100f
+    private val lineWidth = 5f
+
     override fun show() {
 
-        // default settings
-        stageGame = Stage()
+        // initialize using current screen size
+        camera = OrthographicCamera(Gdx.graphics.height.toFloat(), Gdx.graphics.width.toFloat())
+
+        // initialize ScreenViewport
+        viewport = ScreenViewport(camera)
+
+        // initialize SpriteBatch
+        batch = SpriteBatch()
+
+        // initialize ShapeRenderer
+        shapeRenderer = ShapeRenderer()
+
+        // init stage and set inputProcessor
+        stageGame = Stage(viewport, batch)
         Gdx.input.inputProcessor = stageGame
 
         // create game view pause button
@@ -58,8 +88,6 @@ class GameView(private val application : Application, config : GomokuConfigurati
         // add widgets to game stage
         stageGame.addActor(btnGamePause)
 
-        // TODO: display game board on screen
-
         // setup pause stage
         dialogPause = setupPauseDialog()
         stageGame.addActor(dialogPause)
@@ -70,6 +98,41 @@ class GameView(private val application : Application, config : GomokuConfigurati
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         stageGame.act()
         stageGame.draw()
+
+        // update camera and batch
+        camera.update()
+        batch.projectionMatrix = camera.combined
+
+        // get screen data for rendering
+        val screenWidth = Gdx.graphics.width.toFloat()
+        val screenHeight = Gdx.graphics.height.toFloat()
+        val columnHeight = screenHeight - 2f * padding
+        val offset = columnHeight / (gridSize - 1f)
+        val cornerTL = screenWidth / 2f - columnHeight / 2f
+
+        // use shapeRenderer to generate grid
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
+        for (i in 0 until gridSize) {
+            shapeRenderer.rectLine(
+                cornerTL + i * offset,
+                padding + columnHeight,
+                cornerTL + i * offset,
+                padding,
+                lineWidth,
+                Color.WHITE,
+                Color.WHITE
+            )
+            shapeRenderer.rectLine(
+                cornerTL,
+                padding + columnHeight - i * offset,
+                cornerTL + columnHeight,
+                padding + columnHeight - i * offset,
+                lineWidth,
+                Color.WHITE,
+                Color.WHITE
+            )
+        }
+        shapeRenderer.end()
 
         // SIMULATE INPUT VIA CONSOLE
         if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE) && !gamePaused) {
