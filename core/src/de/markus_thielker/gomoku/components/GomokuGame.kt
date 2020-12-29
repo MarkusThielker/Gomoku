@@ -8,7 +8,8 @@ package de.markus_thielker.gomoku.components
  * */
 class GomokuGame(config : GomokuConfiguration) {
 
-    private val board = Array(15) { Array(15) { GomokuField.None } }
+    val board : Array<Array<GomokuField?>> = Array(15) { Array(15) { null } }
+    private val listOfLinks = ArrayList<GomokuFieldConnection>()
 
     private var playerOne : GomokuPlayer = GomokuPlayer(config.playerNameOne, config.playerColorOne)
     private var playerTwo : GomokuPlayer = GomokuPlayer(config.playerNameTwo, config.playerColorTwo)

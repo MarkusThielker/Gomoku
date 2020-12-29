@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import de.markus_thielker.gomoku.Application
 import de.markus_thielker.gomoku.components.GomokuConfiguration
-import de.markus_thielker.gomoku.components.GomokuField
+import de.markus_thielker.gomoku.components.GomokuFieldColor
 import de.markus_thielker.gomoku.components.GomokuOpening
 
 /**
@@ -32,10 +32,10 @@ class SetupView(private val application : Application) : ScreenAdapter() {
     private lateinit var selectOpening : SelectBox<GomokuOpening>
 
     private lateinit var txtNameOne : TextField
-    private lateinit var selectColorOne : SelectBox<GomokuField>
+    private lateinit var selectColorOne : SelectBox<GomokuFieldColor>
 
     private lateinit var txtNameTwo : TextField
-    private lateinit var selectColorTwo : SelectBox<GomokuField>
+    private lateinit var selectColorTwo : SelectBox<GomokuFieldColor>
 
     override fun show() {
 
@@ -46,9 +46,9 @@ class SetupView(private val application : Application) : ScreenAdapter() {
         txtNameOne.setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2, Align.bottomRight)
 
         // get input for color of p1
-        selectColorOne = SelectBox<GomokuField>(application.skin)
-        selectColorOne.items = Array(arrayOf(GomokuField.White, GomokuField.Black))
-        selectColorOne.selected = GomokuField.White
+        selectColorOne = SelectBox<GomokuFieldColor>(application.skin)
+        selectColorOne.items = Array(arrayOf(GomokuFieldColor.White, GomokuFieldColor.Black))
+        selectColorOne.selected = GomokuFieldColor.White
         selectColorOne.setSize(150f, 30f)
         selectColorOne.setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2, Align.topRight)
 
@@ -59,9 +59,9 @@ class SetupView(private val application : Application) : ScreenAdapter() {
         txtNameTwo.setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2, Align.bottomLeft)
 
         // get input for color of p2
-        selectColorTwo = SelectBox<GomokuField>(application.skin)
-        selectColorTwo.items = Array(arrayOf(GomokuField.White, GomokuField.Black))
-        selectColorTwo.selected = GomokuField.Black
+        selectColorTwo = SelectBox<GomokuFieldColor>(application.skin)
+        selectColorTwo.items = Array(arrayOf(GomokuFieldColor.White, GomokuFieldColor.Black))
+        selectColorTwo.selected = GomokuFieldColor.Black
         selectColorTwo.setSize(150f, 30f)
         selectColorTwo.setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2, Align.topLeft)
 

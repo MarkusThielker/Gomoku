@@ -14,12 +14,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import de.markus_thielker.gomoku.Application
 import de.markus_thielker.gomoku.components.GomokuConfiguration
+import de.markus_thielker.gomoku.components.GomokuFieldColor
 import de.markus_thielker.gomoku.components.GomokuGame
-import java.util.*
+import de.markus_thielker.gomoku.components.GomokuPlayer
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.math.sqrt
 
 /**
  * This screen shows the current gameplay state to give players possibility to interact with the game logic
