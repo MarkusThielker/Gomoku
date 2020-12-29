@@ -41,8 +41,7 @@ class GameView(private val application : Application, var config : GomokuConfigu
     private val gameplay = GomokuGame(config, playerOne, playerTwo)
     private var gamePaused = false
 
-    // scanner for input simulation
-    private val scanner = Scanner(System.`in`)
+    private lateinit var activeStage : Stage
 
     // widgets for game visualization
     private lateinit var stageGame : Stage
@@ -109,13 +108,25 @@ class GameView(private val application : Application, var config : GomokuConfigu
         // setup pause stage
         dialogPause = setupPauseDialog()
         stageGame.addActor(dialogPause)
+
+        stageOver = setupStageOver()
     }
 
     override fun render(delta : Float) {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-        stageGame.act()
-        stageGame.draw()
+        activeStage.act()
+        activeStage.draw()
+
+        if (gameplay.gameOver) {
+            activeStage = stageOver
+            Gdx.input.inputProcessor = stageOver
+            lblGameOver.setText("${gameplay.winnerPlayer.name} has won the game!")
+            lblGameOver.setPosition((Gdx.graphics.width).toFloat() / 2 - (lblGameOver.width / 2), (Gdx.graphics.height).toFloat() / 2 - 300)
+            gamePaused = true
+        }
+
+        if (!gamePaused) {
 
             // update camera and batch
             camera.update()
@@ -266,8 +277,39 @@ class GameView(private val application : Application, var config : GomokuConfigu
         return dialog
     }
 
-    private fun switchPause() {
+    private fun setupStageOver() : Stage {
 
+        val stage = Stage()
+
+        lblGameOver = Label("${gameplay.winnerPlayer.name} won the game!", application.skin)
+        lblGameOver.setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2, Align.center)
+
+        btnReplay = TextButton("Rematch", application.skin)
+        btnReplay.setSize(150f, 30f)
+        btnReplay.setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2, Align.topLeft)
+        btnReplay.addListener(object : ClickListener() {
+            override fun clicked(event : InputEvent, x : Float, y : Float) {
+                application.screen = GameView(application, config, gameplay.playerOne, gameplay.playerTwo)
+            }
+        })
+
+        btnBackToMenu = TextButton("Back to Menu", application.skin)
+        btnBackToMenu.setSize(150f, 30f)
+        btnBackToMenu.setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2, Align.topRight)
+        btnBackToMenu.addListener(object : ClickListener() {
+            override fun clicked(event : InputEvent, x : Float, y : Float) {
+                application.screen = MenuView(application)
+            }
+        })
+
+        stage.addActor(lblGameOver)
+        stage.addActor(btnReplay)
+        stage.addActor(btnBackToMenu)
+
+        return stage
+    }
+
+    private fun switchPause() {
         gamePaused = !gamePaused
         dialogPause.isVisible = gamePaused
     }

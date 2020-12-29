@@ -15,8 +15,8 @@ class GomokuGame(
     val board : Array<Array<GomokuField?>> = Array(15) { Array(15) { null } }
     private val listOfLinks = ArrayList<GomokuFieldConnection>()
 
-    private var playerOne : GomokuPlayer = GomokuPlayer(config.playerNameOne, config.playerColorOne)
-    private var playerTwo : GomokuPlayer = GomokuPlayer(config.playerNameTwo, config.playerColorTwo)
+    var gameOver = false
+    var winnerPlayer : GomokuPlayer
 
     private var currentPlayer : GomokuPlayer
     private var round = 1
@@ -43,7 +43,7 @@ class GomokuGame(
 
         // TODO: integrate opening rules
 
-        if (board[x][y] == GomokuField.None) {
+        if (board[x][y] == null) {
 
             // set clicked field to players color
             board[x][y] = GomokuField(arrayOf(x, y), currentPlayer.color)
