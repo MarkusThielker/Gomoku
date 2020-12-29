@@ -32,6 +32,12 @@ class GomokuPlayer(val name : String, val color : GomokuFieldColor) {
      * */
     fun updateState(position : Array<Int>, longestLine : Int, won : Boolean?) {
 
+        // increase placed counter and add position to map
+        if (position[0] < 0) stones = stones + Pair(++placed, position)
+
+        // update the longest line found
+        if (maximum < 0) maximum = longestLine
+
         // case: game ended -> update win and streak count
         won?.let {
             if (won) {
@@ -40,12 +46,6 @@ class GomokuPlayer(val name : String, val color : GomokuFieldColor) {
                 streak = 0
             }; return
         }
-
-        // increase placed counter and add position to map
-        stones = stones + Pair(++placed, position)
-
-        // update the longest line found
-        maximum = longestLine
     }
 
     // TODO: remove debugging function
