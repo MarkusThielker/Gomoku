@@ -78,7 +78,12 @@ class SetupView(private val application : Application) : ScreenAdapter() {
         btnStartGame.addListener(object : ClickListener() {
             override fun clicked(event : InputEvent?, x : Float, y : Float) {
                 application.screen =
-                    GameView(application, GomokuConfiguration(txtNameOne.text, selectColorOne.selected, txtNameTwo.text, selectColorTwo.selected, selectOpening.selected))
+                    GameView(
+                        application,
+                        GomokuConfiguration(txtNameOne.text, selectColorOne.selected, txtNameTwo.text, selectColorTwo.selected, selectOpening.selected),
+                        null,
+                        null
+                    )
             }
         })
 

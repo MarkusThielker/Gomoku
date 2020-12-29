@@ -35,10 +35,10 @@ import kotlin.math.sqrt
  * @author Markus Thielker
  *
  */
-class GameView(private val application : Application, config : GomokuConfiguration) : ScreenAdapter() {
+class GameView(private val application : Application, var config : GomokuConfiguration, playerOne : GomokuPlayer?, playerTwo : GomokuPlayer?) : ScreenAdapter() {
 
     // game interaction essentials
-    private val gameplay = GomokuGame(config)
+    private val gameplay = GomokuGame(config, playerOne, playerTwo)
     private var gamePaused = false
 
     // scanner for input simulation

@@ -6,7 +6,11 @@ package de.markus_thielker.gomoku.components
  * @author Markus Thielker
  *
  * */
-class GomokuGame(config : GomokuConfiguration) {
+class GomokuGame(
+    config : GomokuConfiguration,
+    var playerOne : GomokuPlayer?,
+    var playerTwo : GomokuPlayer?
+) {
 
     val board : Array<Array<GomokuField?>> = Array(15) { Array(15) { null } }
     private val listOfLinks = ArrayList<GomokuFieldConnection>()
@@ -14,12 +18,15 @@ class GomokuGame(config : GomokuConfiguration) {
     private var playerOne : GomokuPlayer = GomokuPlayer(config.playerNameOne, config.playerColorOne)
     private var playerTwo : GomokuPlayer = GomokuPlayer(config.playerNameTwo, config.playerColorTwo)
 
-    private var currentPlayer = playerOne
+    private var currentPlayer : GomokuPlayer
     private var round = 1
 
-    // TODO: remove debugging function
     init {
-        printBoard()
+        if (playerOne == null) playerOne = GomokuPlayer(config.playerNameOne, config.playerColorOne)
+        if (playerTwo == null) playerTwo = GomokuPlayer(config.playerNameTwo, config.playerColorTwo)
+
+        currentPlayer = playerOne!!
+        winnerPlayer = playerOne!!
     }
 
     /**
@@ -283,7 +290,7 @@ class GomokuGame(config : GomokuConfiguration) {
      *
      * */
     private fun switchTurn() {
-        currentPlayer = if (currentPlayer == playerOne) playerTwo else playerOne
+        currentPlayer = if (currentPlayer == playerOne) playerTwo!! else playerOne!!
         round++
     }
 
