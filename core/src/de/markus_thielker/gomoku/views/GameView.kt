@@ -58,10 +58,20 @@ class GameView(private val application : Application, var config : GomokuConfigu
     private lateinit var btnPauseContinue : TextButton
     private lateinit var btnPauseBack : TextButton
 
+    // widgets for game over screen
+    private lateinit var stageOver : Stage
+    private lateinit var lblGameOver : Label
+    private lateinit var btnReplay : TextButton
+    private lateinit var btnBackToMenu : TextButton
+
     // grid dimensions
     private val gridSize = 15
     private val padding = 100f
     private val lineWidth = 5f
+
+    // click cooldown
+    private var cooldown = false
+    private val cooldownLength : Long = 500
 
     override fun show() {
 
@@ -80,6 +90,8 @@ class GameView(private val application : Application, var config : GomokuConfigu
         // init stage and set inputProcessor
         stageGame = Stage(viewport, batch)
         Gdx.input.inputProcessor = stageGame
+
+        activeStage = stageGame
 
         // create game view pause button
         btnGamePause = TextButton("II", application.skin) // TODO: change string to icon
@@ -105,51 +117,110 @@ class GameView(private val application : Application, var config : GomokuConfigu
         stageGame.act()
         stageGame.draw()
 
-        // update camera and batch
-        camera.update()
-        batch.projectionMatrix = camera.combined
+            // update camera and batch
+            camera.update()
+            batch.projectionMatrix = camera.combined
 
-        // get screen data for rendering
-        val screenWidth = Gdx.graphics.width.toFloat()
-        val screenHeight = Gdx.graphics.height.toFloat()
-        val columnHeight = screenHeight - 2f * padding
-        val offset = columnHeight / (gridSize - 1f)
-        val cornerTL = screenWidth / 2f - columnHeight / 2f
+            // get screen data for rendering
+            val screenWidth = Gdx.graphics.width.toFloat()
+            val screenHeight = Gdx.graphics.height.toFloat()
+            val columnHeight = screenHeight - 2f * padding
+            val offset = columnHeight / (gridSize - 1f)
+            val cornerTL = screenWidth / 2f - columnHeight / 2f
 
-        // use shapeRenderer to generate grid
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
-        for (i in 0 until gridSize) {
-            shapeRenderer.rectLine(
-                cornerTL + i * offset,
-                padding + columnHeight,
-                cornerTL + i * offset,
-                padding,
-                lineWidth,
-                Color.WHITE,
-                Color.WHITE
-            )
-            shapeRenderer.rectLine(
-                cornerTL,
-                padding + columnHeight - i * offset,
-                cornerTL + columnHeight,
-                padding + columnHeight - i * offset,
-                lineWidth,
-                Color.WHITE,
-                Color.WHITE
-            )
-        }
-        shapeRenderer.end()
+            // get mouse hover
+            val mouseX = Gdx.input.x
+            val mouseY = Gdx.input.y
 
-        // SIMULATE INPUT VIA CONSOLE
-        if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE) && !gamePaused) {
+            var minDist = sqrt((mouseX - cornerTL) * (mouseX - cornerTL) + (mouseY - padding) * (mouseY - padding))
+            var minX = 0
+            var minY = 0
 
-            print("x: ")
-            val inY = Integer.parseInt(scanner.nextLine()) - 1
+            for (i in 0 until gridSize) {
 
-            print("y: ")
-            val inX = Integer.parseInt(scanner.nextLine()) - 1
+                for (k in 0 until gridSize) {
 
-            gameplay.stonePlaced(inX, inY) // flipped [x,y] due to debugging print direction
+                    val xDist = mouseX - (cornerTL + i * offset)
+                    val yDist = mouseY - (padding + k * offset)
+                    val dist = sqrt(xDist * xDist + yDist * yDist)
+
+                    if (dist < minDist) {
+                        minDist = dist
+                        minX = i
+                        minY = k
+                    }
+                }
+            }
+
+            // rendering grid
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
+            for (i in 0 until gridSize) {
+                shapeRenderer.rectLine(
+                    cornerTL + i * offset,
+                    padding + columnHeight,
+                    cornerTL + i * offset,
+                    padding,
+                    lineWidth,
+                    Color.ORANGE,
+                    Color.ORANGE
+                )
+                shapeRenderer.rectLine(
+                    cornerTL,
+                    padding + columnHeight - i * offset,
+                    cornerTL + columnHeight,
+                    padding + columnHeight - i * offset,
+                    lineWidth,
+                    Color.ORANGE,
+                    Color.ORANGE
+                )
+            }
+            shapeRenderer.end()
+
+            // rendering preview
+            if (minDist < 100) {
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
+                shapeRenderer.color = Color.GREEN
+                shapeRenderer.circle((cornerTL + (minX * 37)), Gdx.graphics.height - (padding + (minY * 37)), 7.5f)
+                shapeRenderer.end()
+            }
+
+            // rendering black stones
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
+            shapeRenderer.color = Color.DARK_GRAY
+            gameplay.board.forEach { column ->
+                column.forEach { field ->
+                    if (field != null && field.color == GomokuFieldColor.Black) {
+                        shapeRenderer.circle(
+                            (cornerTL + (field.pos[0] * 37)), Gdx.graphics.height - (padding + (field.pos[1] * 37)), 18f
+                        )
+                    }
+                }
+            }
+            shapeRenderer.end()
+
+            // rendering white stones
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
+            shapeRenderer.color = Color.WHITE
+            gameplay.board.forEach { column ->
+                column.forEach { field ->
+                    if (field != null && field.color == GomokuFieldColor.White) {
+                        shapeRenderer.circle(
+                            (cornerTL + (field.pos[0] * 37)), Gdx.graphics.height - (padding + (field.pos[1] * 37)), 18f
+                        )
+                    }
+                }
+            }
+            shapeRenderer.end()
+
+            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && minDist < 100 && !cooldown) {
+                gameplay.stonePlaced(minX, minY)
+
+                GlobalScope.launch {
+                    cooldown = true
+                    delay(cooldownLength)
+                    cooldown = false
+                }
+            }
         }
     }
 

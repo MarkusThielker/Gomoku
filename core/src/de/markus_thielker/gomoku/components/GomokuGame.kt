@@ -72,12 +72,10 @@ class GomokuGame(
                 else playerOne!!.updateState(arrayOf(-1, -1), -y, false)
             }
 
-            printBoard() // TODO: remove debugging call
             switchTurn()
 
         } else {
-            // TODO: show feedback in user interface
-            println("At this spot is already a stone placed") // TODO: remove debugging call
+            println("At this spot is already a stone placed") // TODO: move warning from console to ui
         }
     }
 
@@ -324,16 +322,5 @@ class GomokuGame(
         var max = 0
         listOfLinks.forEach { item -> if (item.from.color == currentPlayer.color && item.length > max) max = item.length }
         return max
-    }
-
-    // TODO: remove debugging function
-    private fun printBoard() {
-        println("\n\nboard display test:")
-        board.forEach { line -> line.forEach { field -> print("$field, ") }; println() }
-
-        println()
-
-        println(playerOne.toString())
-        println(playerTwo.toString())
     }
 }
