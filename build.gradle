@@ -67,3 +67,25 @@ project(":core") {
         implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2"
     }
 }
+
+project(":server") {
+    apply plugin: "kotlin"
+
+
+    dependencies {
+        implementation project(":shared")
+        implementation 'com.google.code.gson:gson:2.8.6'
+        implementation "org.java-websocket:Java-WebSocket:1.5.1"
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    }
+}
+
+project(":shared") {
+    apply plugin: "kotlin"
+
+
+    dependencies {
+
+    }
+}
