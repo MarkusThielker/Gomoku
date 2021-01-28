@@ -50,6 +50,8 @@ class GameView(private val application : Application, var config : GomokuConfigu
 
     // widgets for game visualization
     private lateinit var stageGame : Stage
+    private lateinit var lblPlayerNameOne : Label
+    private lateinit var lblPlayerNameTwo : Label
     private lateinit var btnGamePause : ImageButton
     private lateinit var camera : OrthographicCamera
     private lateinit var viewport : Viewport
@@ -97,6 +99,20 @@ class GameView(private val application : Application, var config : GomokuConfigu
 
         activeStage = stageGame
 
+        // TODO: add turn indicator
+
+        // create player one overview
+        lblPlayerNameOne = Label("${gameplay.playerOne!!.name} | Wins: ${gameplay.playerOne!!.wins} | Streak: ${gameplay.playerOne!!.streak}", application.skin)
+        lblPlayerNameOne.apply {
+            setPosition((Gdx.graphics.width / 2 - 15 - lblPlayerNameOne.width / 2), (Gdx.graphics.height - 50).toFloat(), Align.right)
+        }
+
+        // create player two overview
+        lblPlayerNameTwo = Label("${gameplay.playerTwo!!.name} | Wins: ${gameplay.playerTwo!!.wins} | Streak: ${gameplay.playerTwo!!.streak}", application.skin)
+        lblPlayerNameTwo.apply {
+            setPosition((Gdx.graphics.width / 2 + 15 + lblPlayerNameTwo.width / 2), (Gdx.graphics.height - 50).toFloat(), Align.left)
+        }
+
         // create game view pause button
         val drawable : Drawable = TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("img/button_pause.png"))))
         btnGamePause = ImageButton(drawable)
@@ -111,6 +127,8 @@ class GameView(private val application : Application, var config : GomokuConfigu
         }
 
         // add widgets to game stage
+        stageGame.addActor(lblPlayerNameOne)
+        stageGame.addActor(lblPlayerNameTwo)
         stageGame.addActor(btnGamePause)
 
         // setup pause stage
@@ -341,6 +359,7 @@ class GameView(private val application : Application, var config : GomokuConfigu
 
     private fun switchPause() {
         gamePaused = !gamePaused
+        btnGamePause.isVisible = !btnGamePause.isVisible
         dialogPause.isVisible = gamePaused
     }
 }

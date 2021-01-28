@@ -14,11 +14,11 @@ package de.markus_thielker.gomoku.components
  */
 class GomokuPlayer(val name : String, val color : GomokuFieldColor) {
 
-    private var placed = 0
-    private var stones = mapOf<Int, Array<Int>>()
-    private var maximum = 0
-    private var wins = 0
-    private var streak = 0
+    var placed = 0
+    var stones = mapOf<Int, Array<Int>>()
+    var maximum = 0
+    var wins = 0
+    var streak = 0
 
     /**
      * Update player stats after stone was placed.

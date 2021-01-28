@@ -18,8 +18,8 @@ class GomokuGame(
     var gameOver = false
     var winnerPlayer : GomokuPlayer
 
-    private var currentPlayer : GomokuPlayer
-    private var round = 1
+    var currentPlayer : GomokuPlayer
+    var round = 1
 
     init {
         if (playerOne == null) playerOne = GomokuPlayer(config.playerNameOne, GomokuFieldColor.Black)
