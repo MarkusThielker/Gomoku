@@ -9,8 +9,6 @@ package de.markus_thielker.gomoku.components
  */
 class GomokuConfiguration(
     val playerNameOne : String,
-    val playerColorOne : GomokuFieldColor,
     val playerNameTwo : String,
-    val playerColorTwo : GomokuFieldColor,
     val opening : GomokuOpening
 )

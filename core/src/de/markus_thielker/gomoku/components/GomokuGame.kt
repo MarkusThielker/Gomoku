@@ -22,8 +22,8 @@ class GomokuGame(
     private var round = 1
 
     init {
-        if (playerOne == null) playerOne = GomokuPlayer(config.playerNameOne, config.playerColorOne)
-        if (playerTwo == null) playerTwo = GomokuPlayer(config.playerNameTwo, config.playerColorTwo)
+        if (playerOne == null) playerOne = GomokuPlayer(config.playerNameOne, GomokuFieldColor.Black)
+        if (playerTwo == null) playerTwo = GomokuPlayer(config.playerNameTwo, GomokuFieldColor.White)
 
         currentPlayer = playerOne!!
         winnerPlayer = playerOne!!
