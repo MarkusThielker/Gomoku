@@ -75,7 +75,7 @@ class GameView(private val application : Application, var config : GomokuConfigu
 
     // click cooldown
     private var cooldown = false
-    private val cooldownLength : Long = 500
+    private val cooldownLength : Long = 250
 
     override fun show() {
 
