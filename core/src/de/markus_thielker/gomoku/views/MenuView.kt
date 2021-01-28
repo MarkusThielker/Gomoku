@@ -10,6 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import de.markus_thielker.gomoku.Application
 import de.markus_thielker.gomoku.socket.SimpleClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.java_websocket.client.WebSocketClient
 import java.net.URI
 
@@ -58,12 +61,14 @@ class MenuView(private val application : Application) : ScreenAdapter() {
         btnMenuConnectionTest.setPosition((Gdx.graphics.width / 2).toFloat() - (btnMenuConnectionTest.width / 2), (Gdx.graphics.height / 2).toFloat() - 40)
         btnMenuConnectionTest.addListener(object : ClickListener() {
             override fun clicked(event : InputEvent, x : Float, y : Float) {
-                try {
-                    val client : WebSocketClient = SimpleClient(URI(String.format("ws://%s:%d", "localhost", 42000)))
-                    client.connect()
-                    client.close()
-                } catch (exception : Exception) {
-                    exception.printStackTrace()
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        val client : WebSocketClient = SimpleClient(URI(String.format("ws://%s:%d", "localhost", 42000)))
+                        client.connect()
+                        client.close()
+                    } catch (exception : Exception) {
+                        exception.printStackTrace()
+                    }
                 }
             }
         })
