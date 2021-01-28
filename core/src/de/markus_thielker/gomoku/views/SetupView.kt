@@ -38,47 +38,57 @@ class SetupView(private val application : Application) : ScreenAdapter() {
 
         // get input for name of p1
         txtNameOne = TextField("", application.skin)
-        txtNameOne.text = "Player1"
-        txtNameOne.setSize(150f, 30f)
-        txtNameOne.setPosition((Gdx.graphics.width).toFloat() / 2 - 5, (Gdx.graphics.height).toFloat() / 2 + 15, Align.bottomRight)
+        txtNameOne.apply {
+            text = "Player1"
+            setSize(150f, 30f)
+            setPosition((Gdx.graphics.width).toFloat() / 2 - 5, (Gdx.graphics.height).toFloat() / 2 + 15, Align.bottomRight)
+        }
 
         // get input for name of p2
         txtNameTwo = TextField("", application.skin)
-        txtNameTwo.text = "Player2"
-        txtNameTwo.setSize(150f, 30f)
-        txtNameTwo.setPosition((Gdx.graphics.width).toFloat() / 2 + 5, (Gdx.graphics.height).toFloat() / 2 + 15, Align.bottomLeft)
+        txtNameTwo.apply {
+            text = "Player2"
+            setSize(150f, 30f)
+            setPosition((Gdx.graphics.width).toFloat() / 2 + 5, (Gdx.graphics.height).toFloat() / 2 + 15, Align.bottomLeft)
+        }
 
         // get input for game opening rule
         selectOpening = SelectBox<GomokuOpening>(application.skin)
-        selectOpening.items = Array(arrayOf(GomokuOpening.Standard, GomokuOpening.Swap2))
-        selectOpening.setSize(310f, 30f)
-        selectOpening.setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2 - 10, Align.center)
+        selectOpening.apply {
+            items = Array(arrayOf(GomokuOpening.Standard, GomokuOpening.Swap2))
+            setSize(310f, 30f)
+            setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2 - 10, Align.center)
+        }
 
         // get input to start game
         btnStartGame = TextButton("Start the game", application.skin)
-        btnStartGame.setSize(310f, 30f)
-        btnStartGame.setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2 - 50, Align.center)
-        btnStartGame.addListener(object : ClickListener() {
-            override fun clicked(event : InputEvent?, x : Float, y : Float) {
-                application.screen =
-                    GameView(
-                        application,
-                        GomokuConfiguration(txtNameOne.text, txtNameTwo.text, selectOpening.selected),
-                        null,
-                        null
-                    )
-            }
-        })
+        btnStartGame.apply {
+            setSize(310f, 30f)
+            setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2 - 50, Align.center)
+            addListener(object : ClickListener() {
+                override fun clicked(event : InputEvent?, x : Float, y : Float) {
+                    application.screen =
+                        GameView(
+                            application,
+                            GomokuConfiguration(txtNameOne.text, txtNameTwo.text, selectOpening.selected),
+                            null,
+                            null
+                        )
+                }
+            })
+        }
 
         // get input to start game
         btnBack = TextButton("Back to menu", application.skin)
-        btnBack.setSize(125f, 30f)
-        btnBack.setPosition(30f, 30f, Align.bottomLeft)
-        btnBack.addListener(object : ClickListener() {
-            override fun clicked(event : InputEvent?, x : Float, y : Float) {
-                application.screen = MenuView(application)
-            }
-        })
+        btnBack.apply {
+            setSize(125f, 30f)
+            setPosition(30f, 30f, Align.bottomLeft)
+            addListener(object : ClickListener() {
+                override fun clicked(event : InputEvent?, x : Float, y : Float) {
+                    application.screen = MenuView(application)
+                }
+            })
+        }
 
         // add widgets to stageSetup
         stageSetup = Stage()

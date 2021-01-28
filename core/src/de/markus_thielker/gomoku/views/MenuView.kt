@@ -38,41 +38,43 @@ class MenuView(private val application : Application) : ScreenAdapter() {
         stageMenu = Stage()
         Gdx.input.inputProcessor = stageMenu
 
-
         // create game view title label
         lblMenuHeading = Label("MenuView", application.skin)
-        lblMenuHeading.setPosition((Gdx.graphics.width / 2).toFloat() - (lblMenuHeading.width / 2), (Gdx.graphics.height / 2).toFloat() + 40)
-
+        lblMenuHeading.apply {
+            setPosition((Gdx.graphics.width / 2).toFloat() - (lblMenuHeading.width / 2), (Gdx.graphics.height / 2).toFloat() + 40)
+        }
 
         // create menu game view button
         btnMenuGameView = TextButton("Play!", application.skin)
-        btnMenuGameView.setSize(150f, 30f)
-        btnMenuGameView.setPosition((Gdx.graphics.width / 2).toFloat() - (btnMenuGameView.width / 2), (Gdx.graphics.height / 2).toFloat())
-        btnMenuGameView.addListener(object : ClickListener() {
-            override fun clicked(event : InputEvent, x : Float, y : Float) {
-                application.screen = SetupView(application)
-            }
-        })
-
+        btnMenuGameView.apply {
+            setSize(150f, 30f)
+            setPosition((Gdx.graphics.width / 2).toFloat() - (btnMenuGameView.width / 2), (Gdx.graphics.height / 2).toFloat())
+            addListener(object : ClickListener() {
+                override fun clicked(event : InputEvent, x : Float, y : Float) {
+                    application.screen = SetupView(application)
+                }
+            })
+        }
 
         // create connection test button
         btnMenuConnectionTest = TextButton("Check connection", application.skin)
-        btnMenuConnectionTest.setSize(150f, 30f)
-        btnMenuConnectionTest.setPosition((Gdx.graphics.width / 2).toFloat() - (btnMenuConnectionTest.width / 2), (Gdx.graphics.height / 2).toFloat() - 40)
-        btnMenuConnectionTest.addListener(object : ClickListener() {
-            override fun clicked(event : InputEvent, x : Float, y : Float) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    try {
-                        val client : WebSocketClient = SimpleClient(URI(String.format("ws://%s:%d", "localhost", 42000)))
-                        client.connect()
-                        client.close()
-                    } catch (exception : Exception) {
-                        exception.printStackTrace()
+        btnMenuConnectionTest.apply {
+            setSize(150f, 30f)
+            setPosition((Gdx.graphics.width / 2).toFloat() - (btnMenuConnectionTest.width / 2), (Gdx.graphics.height / 2).toFloat() - 40)
+            addListener(object : ClickListener() {
+                override fun clicked(event : InputEvent, x : Float, y : Float) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            val client : WebSocketClient = SimpleClient(URI(String.format("ws://%s:%d", "localhost", 42000)))
+                            client.connect()
+                            client.close()
+                        } catch (exception : Exception) {
+                            exception.printStackTrace()
+                        }
                     }
                 }
-            }
-        })
-
+            })
+        }
 
         // add widgets to menu stage
         stageMenu.addActor(lblMenuHeading)
