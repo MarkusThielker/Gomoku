@@ -27,12 +27,12 @@ class SetupView(private val application : Application) : ScreenAdapter() {
 
     private lateinit var stageSetup : Stage
 
-    private lateinit var btnStartGame : TextButton
-    private lateinit var selectOpening : SelectBox<GomokuOpening>
-
     private lateinit var txtNameOne : TextField
-
     private lateinit var txtNameTwo : TextField
+    private lateinit var selectOpening : SelectBox<GomokuOpening>
+    private lateinit var btnStartGame : TextButton
+
+    private lateinit var btnBack : TextButton
 
     override fun show() {
 
@@ -70,16 +70,26 @@ class SetupView(private val application : Application) : ScreenAdapter() {
             }
         })
 
+        // get input to start game
+        btnBack = TextButton("Back to menu", application.skin)
+        btnBack.setSize(125f, 30f)
+        btnBack.setPosition(30f, 30f, Align.bottomLeft)
+        btnBack.addListener(object : ClickListener() {
+            override fun clicked(event : InputEvent?, x : Float, y : Float) {
+                application.screen = MenuView(application)
+            }
+        })
+
         // add widgets to stageSetup
         stageSetup = Stage()
         Gdx.input.inputProcessor = stageSetup
 
         stageSetup.addActor(txtNameOne)
-
         stageSetup.addActor(txtNameTwo)
-
         stageSetup.addActor(selectOpening)
         stageSetup.addActor(btnStartGame)
+
+        stageSetup.addActor(btnBack)
     }
 
     override fun render(delta : Float) {

@@ -6,14 +6,19 @@ import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.badlogic.gdx.utils.viewport.Viewport
@@ -45,7 +50,7 @@ class GameView(private val application : Application, var config : GomokuConfigu
 
     // widgets for game visualization
     private lateinit var stageGame : Stage
-    private lateinit var btnGamePause : TextButton
+    private lateinit var btnGamePause : ImageButton
     private lateinit var camera : OrthographicCamera
     private lateinit var viewport : Viewport
     private lateinit var batch : SpriteBatch
@@ -93,9 +98,10 @@ class GameView(private val application : Application, var config : GomokuConfigu
         activeStage = stageGame
 
         // create game view pause button
-        btnGamePause = TextButton("II", application.skin) // TODO: change string to icon
-        btnGamePause.setSize(30f, 30f)
-        btnGamePause.setPosition((Gdx.graphics.width - 30).toFloat(), (Gdx.graphics.height - 30).toFloat())
+        val drawable : Drawable = TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("img/button_pause.png"))))
+        btnGamePause = ImageButton(drawable)
+        btnGamePause.setSize(35f, 35f)
+        btnGamePause.setPosition((Gdx.graphics.width - 45).toFloat(), (Gdx.graphics.height - 45).toFloat())
         btnGamePause.addListener(object : ClickListener() {
             override fun clicked(event : InputEvent, x : Float, y : Float) {
                 switchPause()
@@ -123,17 +129,12 @@ class GameView(private val application : Application, var config : GomokuConfigu
         activeStage.batch.draw(application.backgroundTexture, 0f, Gdx.graphics.height.toFloat())
         activeStage.batch.end()
 
-        activeStage.draw()
-
         if (gameplay.gameOver) {
             activeStage = stageOver
             Gdx.input.inputProcessor = stageOver
             lblGameOver.setText("${gameplay.winnerPlayer.name} has won the game!")
-            lblGameOver.setPosition((Gdx.graphics.width).toFloat() / 2 - (lblGameOver.width / 2), (Gdx.graphics.height).toFloat() / 2 - 300)
             gamePaused = true
-        }
-
-        if (!gamePaused) {
+        } else {
 
             // update camera and batch
             camera.update()
@@ -194,12 +195,25 @@ class GameView(private val application : Application, var config : GomokuConfigu
             }
             shapeRenderer.end()
 
-            // rendering preview
-            if (minDist < 100) {
-                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
-                shapeRenderer.color = Color.GREEN
-                shapeRenderer.circle((cornerTL + (minX * 37)), Gdx.graphics.height - (padding + (minY * 37)), 7.5f)
-                shapeRenderer.end()
+            if (!gamePaused) {
+
+                // rendering preview
+                if (minDist < 100) {
+                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
+                    shapeRenderer.color = Color.GREEN
+                    shapeRenderer.circle((cornerTL + (minX * 37)), Gdx.graphics.height - (padding + (minY * 37)), 7.5f)
+                    shapeRenderer.end()
+                }
+
+                if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && minDist < 100 && !cooldown) {
+                    gameplay.stonePlaced(minX, minY)
+
+                    GlobalScope.launch {
+                        cooldown = true
+                        delay(cooldownLength)
+                        cooldown = false
+                    }
+                }
             }
 
             // rendering black stones
@@ -229,17 +243,9 @@ class GameView(private val application : Application, var config : GomokuConfigu
                 }
             }
             shapeRenderer.end()
-
-            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && minDist < 100 && !cooldown) {
-                gameplay.stonePlaced(minX, minY)
-
-                GlobalScope.launch {
-                    cooldown = true
-                    delay(cooldownLength)
-                    cooldown = false
-                }
-            }
         }
+
+        activeStage.draw()
     }
 
     override fun dispose() {
@@ -257,10 +263,12 @@ class GameView(private val application : Application, var config : GomokuConfigu
 
         // create pause dialog title label
         lblPauseHeading = Label("Pause", application.skin)
+        lblPauseHeading.setPosition(dialog.width / 2, dialog.height / 2 + 30, Align.center)
 
         // create pause dialog continue button
         btnPauseContinue = TextButton("Continue", application.skin)
         btnPauseContinue.setSize(150f, 30f)
+        btnPauseContinue.setPosition(dialog.width / 2, dialog.height / 2 - 10, Align.center)
         btnPauseContinue.addListener(object : ClickListener() {
             override fun clicked(event : InputEvent, x : Float, y : Float) {
                 switchPause()
@@ -270,6 +278,7 @@ class GameView(private val application : Application, var config : GomokuConfigu
         // create pause dialog back button
         btnPauseBack = TextButton("Back to Menu", application.skin)
         btnPauseBack.setSize(150f, 30f)
+        btnPauseBack.setPosition(dialog.width / 2, dialog.height / 2 - 50, Align.center)
         btnPauseBack.addListener(object : ClickListener() {
             override fun clicked(event : InputEvent, x : Float, y : Float) {
                 application.screen = MenuView(application)
@@ -277,9 +286,9 @@ class GameView(private val application : Application, var config : GomokuConfigu
         })
 
         // add widgets to dialog
-        dialog.contentTable.add(lblPauseHeading)
-        dialog.contentTable.add(btnPauseContinue)
-        dialog.contentTable.add(btnPauseBack)
+        dialog.contentTable.addActor(lblPauseHeading)
+        dialog.contentTable.addActor(btnPauseContinue)
+        dialog.contentTable.addActor(btnPauseBack)
 
         return dialog
     }
@@ -289,11 +298,11 @@ class GameView(private val application : Application, var config : GomokuConfigu
         val stage = Stage()
 
         lblGameOver = Label("${gameplay.winnerPlayer.name} won the game!", application.skin)
-        lblGameOver.setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2, Align.center)
+        lblGameOver.setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2 + 20, Align.center)
 
         btnReplay = TextButton("Rematch", application.skin)
         btnReplay.setSize(150f, 30f)
-        btnReplay.setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2, Align.topLeft)
+        btnReplay.setPosition((Gdx.graphics.width).toFloat() / 2 + 5, (Gdx.graphics.height).toFloat() / 2, Align.topLeft)
         btnReplay.addListener(object : ClickListener() {
             override fun clicked(event : InputEvent, x : Float, y : Float) {
                 application.screen = GameView(application, config, gameplay.playerOne, gameplay.playerTwo)
@@ -302,7 +311,7 @@ class GameView(private val application : Application, var config : GomokuConfigu
 
         btnBackToMenu = TextButton("Back to Menu", application.skin)
         btnBackToMenu.setSize(150f, 30f)
-        btnBackToMenu.setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2, Align.topRight)
+        btnBackToMenu.setPosition((Gdx.graphics.width).toFloat() / 2 - 5, (Gdx.graphics.height).toFloat() / 2, Align.topRight)
         btnBackToMenu.addListener(object : ClickListener() {
             override fun clicked(event : InputEvent, x : Float, y : Float) {
                 application.screen = MenuView(application)

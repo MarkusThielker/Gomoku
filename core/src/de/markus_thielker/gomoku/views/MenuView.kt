@@ -35,13 +35,13 @@ class MenuView(private val application : Application) : ScreenAdapter() {
 
         // create game view title label
         lblMenuHeading = Label("MenuView", application.skin)
-        lblMenuHeading.setPosition((Gdx.graphics.width / 2).toFloat() - (lblMenuHeading.width / 2), (Gdx.graphics.height / 2).toFloat() + 80)
+        lblMenuHeading.setPosition((Gdx.graphics.width / 2).toFloat() - (lblMenuHeading.width / 2), (Gdx.graphics.height / 2).toFloat() + 40)
 
 
         // create menu game view button
         btnMenuGameView = TextButton("Play!", application.skin)
         btnMenuGameView.setSize(150f, 30f)
-        btnMenuGameView.setPosition((Gdx.graphics.width / 2).toFloat() - (btnMenuGameView.width / 2), (Gdx.graphics.height / 2).toFloat() + 40)
+        btnMenuGameView.setPosition((Gdx.graphics.width / 2).toFloat() - (btnMenuGameView.width / 2), (Gdx.graphics.height / 2).toFloat())
         btnMenuGameView.addListener(object : ClickListener() {
             override fun clicked(event : InputEvent, x : Float, y : Float) {
                 application.screen = SetupView(application)
@@ -52,7 +52,7 @@ class MenuView(private val application : Application) : ScreenAdapter() {
         // create connection test button
         btnMenuConnectionTest = TextButton("Check connection", application.skin)
         btnMenuConnectionTest.setSize(150f, 30f)
-        btnMenuConnectionTest.setPosition((Gdx.graphics.width / 2).toFloat() - (btnMenuConnectionTest.width / 2), (Gdx.graphics.height / 2).toFloat())
+        btnMenuConnectionTest.setPosition((Gdx.graphics.width / 2).toFloat() - (btnMenuConnectionTest.width / 2), (Gdx.graphics.height / 2).toFloat() - 40)
         btnMenuConnectionTest.addListener(object : ClickListener() {
             override fun clicked(event : InputEvent, x : Float, y : Float) {
                 // TODO: initiate connection check
