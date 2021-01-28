@@ -71,6 +71,13 @@ class MenuView(private val application : Application) : ScreenAdapter() {
         // clear view before redrawing
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         stageMenu.act()
+
+        // draw background to batch
+        stageMenu.batch.begin()
+        stageMenu.batch.draw(application.backgroundTexture, 0f, 0f)
+        stageMenu.batch.draw(application.backgroundTexture, 0f, Gdx.graphics.height.toFloat())
+        stageMenu.batch.end()
+
         stageMenu.draw()
     }
 

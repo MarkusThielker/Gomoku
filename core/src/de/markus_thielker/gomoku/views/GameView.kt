@@ -116,6 +116,13 @@ class GameView(private val application : Application, var config : GomokuConfigu
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         activeStage.act()
+
+        // draw background to batch
+        activeStage.batch.begin()
+        activeStage.batch.draw(application.backgroundTexture, 0f, 0f)
+        activeStage.batch.draw(application.backgroundTexture, 0f, Gdx.graphics.height.toFloat())
+        activeStage.batch.end()
+
         activeStage.draw()
 
         if (gameplay.gameOver) {
@@ -172,8 +179,8 @@ class GameView(private val application : Application, var config : GomokuConfigu
                     cornerTL + i * offset,
                     padding,
                     lineWidth,
-                    Color.ORANGE,
-                    Color.ORANGE
+                    Color.GRAY,
+                    Color.GRAY
                 )
                 shapeRenderer.rectLine(
                     cornerTL,
@@ -181,8 +188,8 @@ class GameView(private val application : Application, var config : GomokuConfigu
                     cornerTL + columnHeight,
                     padding + columnHeight - i * offset,
                     lineWidth,
-                    Color.ORANGE,
-                    Color.ORANGE
+                    Color.GRAY,
+                    Color.GRAY
                 )
             }
             shapeRenderer.end()
@@ -197,7 +204,7 @@ class GameView(private val application : Application, var config : GomokuConfigu
 
             // rendering black stones
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
-            shapeRenderer.color = Color.DARK_GRAY
+            shapeRenderer.color = Color.BLACK
             gameplay.board.forEach { column ->
                 column.forEach { field ->
                     if (field != null && field.color == GomokuFieldColor.Black) {

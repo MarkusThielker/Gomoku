@@ -86,6 +86,13 @@ class SetupView(private val application : Application) : ScreenAdapter() {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         stageSetup.act()
+
+        // draw background to batch
+        stageSetup.batch.begin()
+        stageSetup.batch.draw(application.backgroundTexture, 0f, 0f)
+        stageSetup.batch.draw(application.backgroundTexture, 0f, Gdx.graphics.height.toFloat())
+        stageSetup.batch.end()
+
         stageSetup.draw()
     }
 
