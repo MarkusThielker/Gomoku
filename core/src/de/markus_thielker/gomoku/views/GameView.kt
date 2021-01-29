@@ -263,6 +263,29 @@ class GameView(private val application : Application, var config : GomokuConfigu
                 }
             }
             shapeRenderer.end()
+
+            // rendering turn indicator
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
+            shapeRenderer.color = Color.RED
+
+            if (gameplay.currentPlayer == gameplay.playerOne) {
+                shapeRenderer.rectLine(
+                    lblPlayerNameOne.getX(Align.bottomLeft),
+                    lblPlayerNameOne.getY(Align.bottomLeft),
+                    lblPlayerNameOne.getX(Align.bottomRight),
+                    lblPlayerNameOne.getY(Align.bottomRight),
+                    4f
+                )
+            } else {
+                shapeRenderer.rectLine(
+                    lblPlayerNameTwo.getX(Align.bottomLeft),
+                    lblPlayerNameTwo.getY(Align.bottomLeft),
+                    lblPlayerNameTwo.getX(Align.bottomRight),
+                    lblPlayerNameTwo.getY(Align.bottomRight),
+                    4f
+                )
+            }
+            shapeRenderer.end()
         }
 
         activeStage.draw()
