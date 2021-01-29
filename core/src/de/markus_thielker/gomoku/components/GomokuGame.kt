@@ -119,7 +119,7 @@ class GomokuGame(
             switchTurn()
 
         } else {
-            println("At this spot is already a stone placed") // TODO: move warning from console to ui
+            parentView.showMessage("Error", "On this field is already a stone placed.")
         }
     }
 

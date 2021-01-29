@@ -12,10 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
@@ -447,6 +444,42 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
 
         // reposition dialog
         dialog.setPosition((Gdx.graphics.width / 2).toFloat(), 40f, Align.center)
+    }
+
+    /**
+     * Display a message in the bottom of the screen.
+     *
+     * @param title title of the dialog
+     * @param message message of the dialog
+     * @param skin skin of the dialog, if not passed -> applications default
+     *
+     * @author Markus Thielker
+     *
+     * */
+    fun showMessage(title : String, message : String, skin : Skin = application.skin) {
+
+        // launch coroutine to not block main thread
+        GlobalScope.launch {
+
+            // create dialog
+            val dialog = Dialog(title, skin)
+
+            // add message to dialog
+            dialog.contentTable.addActor(Label(message, skin))
+
+            // show dialog
+            dialog.show(activeStage)
+
+            dialog.width = 500f
+            dialog.height = 60f
+
+            // reposition dialog
+            dialog.setPosition((Gdx.graphics.width / 2).toFloat(), 40f, Align.center)
+
+            delay(2500)
+
+            dialog.hide()
+        }
     }
 
     /**
