@@ -12,7 +12,7 @@ package de.markus_thielker.gomoku.components
  * @author Markus Thielker
  *
  */
-class GomokuPlayer(val name : String, val color : GomokuFieldColor) {
+class GomokuPlayer(val name : String, var color : GomokuFieldColor) {
 
     var placed = 0
     var stones = mapOf<Int, Array<Int>>()

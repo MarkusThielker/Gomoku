@@ -1,5 +1,14 @@
 package de.markus_thielker.gomoku.components
 
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog
+import de.markus_thielker.gomoku.socket.SimpleClient
+import de.markus_thielker.gomoku.views.GameView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.net.URI
+
 /**
  * The Gomoku class contains the game logic for gomoku.
  *
@@ -7,7 +16,8 @@ package de.markus_thielker.gomoku.components
  *
  * */
 class GomokuGame(
-    config : GomokuConfiguration,
+    private val parentView : GameView,
+    private val config : GomokuConfiguration,
     var playerOne : GomokuPlayer?,
     var playerTwo : GomokuPlayer?
 ) {
@@ -288,8 +298,77 @@ class GomokuGame(
      *
      * */
     private fun switchTurn() {
-        currentPlayer = if (currentPlayer == playerOne) playerTwo!! else playerOne!!
+
+        when (config.opening) {
+            GomokuOpening.Standard -> {
+
+                // switch current player
+                switchPlayer()
+            }
+            GomokuOpening.Swap2 -> {
+
+                // first three stones -> player one | switching colors
+                when {
+                    round < 3 -> {
+
+                        // switch color of currentPlayer (player one)
+                        currentPlayer.color = if (currentPlayer.color == GomokuFieldColor.Black) GomokuFieldColor.White else GomokuFieldColor.Black
+                    }
+                    round == 3 -> {
+
+                        switchPlayer()
+
+                        val dialog = object : Dialog("How to proceed", parentView.application.skin) {
+
+                            override fun result(result : Any) {
+
+                                parentView.onResultReceived()
+
+                                println("Option: $result")
+
+                                when (result) {
+                                    1 -> {
+                                        val otherPlayer = if (currentPlayer == playerOne) playerTwo!! else playerOne!!
+
+                                        otherPlayer.color = GomokuFieldColor.Black
+                                        currentPlayer.color = GomokuFieldColor.White
+                                    }
+                                    2 -> {
+                                        currentPlayer.color = GomokuFieldColor.Black
+                                        switchPlayer()
+                                        currentPlayer.color = GomokuFieldColor.White
+                                    }
+                                    3 -> {
+                                        round = 2
+
+                                        val otherPlayer = if (currentPlayer == playerOne) playerTwo!! else playerOne!!
+                                        otherPlayer.color = GomokuFieldColor.White
+                                    }
+                                }
+                            }
+                        }
+
+                        dialog.button("Play White", 1)
+                        dialog.button("Play Black", 2)
+                        dialog.button("Opponent decides", 3)
+
+                        parentView.swapTwoDialog(dialog)
+                    }
+                    round > 3 -> {
+
+                        // switch current player
+                        switchPlayer()
+                    }
+                }
+            }
+        }
+
+        // increase round count
         round++
+    }
+
+    private fun switchPlayer() {
+        currentPlayer = if (currentPlayer == playerOne) playerTwo!! else playerOne!!
     }
 
     /**

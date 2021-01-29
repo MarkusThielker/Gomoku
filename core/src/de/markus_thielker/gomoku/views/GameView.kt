@@ -40,10 +40,10 @@ import kotlin.math.sqrt
  * @author Markus Thielker
  *
  */
-class GameView(private val application : Application, var config : GomokuConfiguration, playerOne : GomokuPlayer?, playerTwo : GomokuPlayer?) : ScreenAdapter() {
+class GameView(val application : Application, var config : GomokuConfiguration, playerOne : GomokuPlayer?, playerTwo : GomokuPlayer?) : ScreenAdapter() {
 
     // game interaction essentials
-    private val gameplay = GomokuGame(config, playerOne, playerTwo)
+    private val gameplay = GomokuGame(this, config, playerOne, playerTwo)
     private var gamePaused = false
 
     private lateinit var activeStage : Stage
@@ -357,6 +357,10 @@ class GameView(private val application : Application, var config : GomokuConfigu
             setPosition((Gdx.graphics.width).toFloat() / 2 + 5, (Gdx.graphics.height).toFloat() / 2, Align.topLeft)
             addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
+
+                    gameplay.playerOne!!.color = GomokuFieldColor.Black
+                    gameplay.playerTwo!!.color = GomokuFieldColor.White
+
                     application.screen = GameView(application, config, gameplay.playerOne, gameplay.playerTwo)
                 }
             })
@@ -380,9 +384,26 @@ class GameView(private val application : Application, var config : GomokuConfigu
         return stage
     }
 
+    fun swapTwoDialog(dialog : Dialog) {
+        gamePaused = !gamePaused
+        btnGamePause.isVisible = !btnGamePause.isVisible
+
+        dialog.show(activeStage)
+
+        dialog.height = 60f
+        dialog.width = 400f
+
+        dialog.setPosition((Gdx.graphics.width / 2).toFloat(), 40f, Align.center)
+    }
+
     private fun switchPause() {
         gamePaused = !gamePaused
         btnGamePause.isVisible = !btnGamePause.isVisible
         dialogPause.isVisible = gamePaused
+    }
+
+    fun onResultReceived() {
+        gamePaused = !gamePaused
+        btnGamePause.isVisible = !btnGamePause.isVisible
     }
 }
