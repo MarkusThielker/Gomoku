@@ -1,13 +1,14 @@
 package de.markus_thielker.gomoku.socket
 
-
+import ExtractorMessage
 import com.google.gson.Gson
-import io.swapastack.gomoku.shared.HelloServer
+import com.google.gson.JsonSyntaxException
+import io.swapastack.gomoku.shared.*
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 import java.nio.ByteBuffer
-
+import java.util.*
 
 /**
  * The SimpleClient extends the WebSocketClient class.
@@ -29,6 +30,8 @@ class SimpleClient(server_uri : URI?) : WebSocketClient(server_uri) {
     // see: https://github.com/google/gson/blob/master/UserGuide.md#TOC-Serializing-and-Deserializing-Generic-Types
     private val gson : Gson = Gson()
 
+    private lateinit var uuid : UUID
+
     /**
      * This method is called if the connection to the WebSocketServer is open.
      *
@@ -36,12 +39,16 @@ class SimpleClient(server_uri : URI?) : WebSocketClient(server_uri) {
      * @author Dennis Jehle
      */
     override fun onOpen(handshake_data : ServerHandshake) {
-        // create new TestMassage Java object
+
+        // create new HelloServer message object
         val message = HelloServer()
-        // create JSON String from TestMessage Java object
-        val testMessage : String = gson.toJson(message)
-        // send JSON encoded test message as String to the connected WebSocket server
-        send(testMessage)
+
+        // create JSON String from HelloServer message object
+        val messageJSON : String = gson.toJson(message)
+
+        // send JSON encoded HelloServer message as String to the connected WebSocket server
+        send(messageJSON)
+
         // 'debug' output
         println("new connection opened")
     }
@@ -55,7 +62,6 @@ class SimpleClient(server_uri : URI?) : WebSocketClient(server_uri) {
      * @author Dennis Jehle
      */
     override fun onClose(code : Int, reason : String, remote : Boolean) {
-        // TODO: implement client sign-off
         println("closed with exit code $code additional info: $reason")
     }
 
@@ -66,11 +72,73 @@ class SimpleClient(server_uri : URI?) : WebSocketClient(server_uri) {
      * @author Dennis Jehle
      */
     override fun onMessage(message : String) {
-        // TODO: parse message type and content
+
+        // TODO: handle negative and missing feedback
+
+        try {
+            val extractorMessage : ExtractorMessage = gson.fromJson(message, ExtractorMessage::class.java)
+            when (extractorMessage.messageType) {
+                MessageType.WelcomeClient -> {
+                    val welcomeClient : WelcomeClient = gson.fromJson(message, WelcomeClient::class.java)
+                    uuid = welcomeClient.userId
+                }
+                MessageType.HistorySaved -> {
+                    val historySaved : HistorySaved = gson.fromJson(message, HistorySaved::class.java)
+                }
+                MessageType.GoodbyeClient -> {
+                    val goodbyeClient : GoodbyeClient = gson.fromJson(message, GoodbyeClient::class.java)
+                    this.close()
+                }
+                else -> this.close() // see class description
+            }
+        } catch (jse : JsonSyntaxException) {
+            this.close() // see class description
+        }
+
         println("received message: $message")
     }
 
-    // TODO: add history push function
+    /**
+     * This function is called to close the WebSocketClient session
+     *
+     * */
+    fun closeSession() {
+
+        // create new GoodbyeServer message object
+        val message = GoodbyeServer(uuid)
+
+        // create JSON String from GoodbyeServer Java object
+        val messageJSON : String = gson.toJson(message)
+
+        // send JSON encoded GoodbyeServer message as String to the connected WebSocket server
+        send(messageJSON)
+
+        // 'debug' output
+        println("web socket client session closed")
+    }
+
+    /**
+     * This function sends the passed match result to the WebSocketServer.
+     *
+     * @param playerOneName name of player one
+     * @param playerTwoName name of player two
+     * @param playerOneWinner if player one is the winner
+     * @param playerTwoWinner if player two is the winner
+     */
+    fun pushMatchResult(playerOneName : String, playerTwoName : String, playerOneWinner : Boolean, playerTwoWinner : Boolean) {
+
+        // create new HistoryPush message object
+        val message = HistoryPush(uuid, playerOneName, playerTwoName, playerOneWinner, playerTwoWinner)
+
+        // create JSON String from TestMessage Java object
+        val messageJSON : String = gson.toJson(message)
+
+        // send JSON encoded HistoryPush message as String to the connected WebSocket server
+        send(messageJSON)
+
+        // 'debug' output
+        println("match result pushed")
+    }
 
     // TODO: add history pull function
 

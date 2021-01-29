@@ -51,8 +51,6 @@ class GomokuGame(
      * */
     fun stonePlaced(x : Int, y : Int) {
 
-        // TODO: integrate opening rules
-
         if (board[x][y] == null) {
 
             // set clicked field to players color
@@ -77,6 +75,29 @@ class GomokuGame(
 
             // in case somebody won notify player instances
             won?.let {
+
+                // push match result to server
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+
+                        val client = SimpleClient(URI(String.format("ws://%s:%d", "localhost", 42000)))
+
+                        client.connect()
+
+                        delay(500)
+
+                        val playerOneWinner = currentPlayer == playerOne
+                        client.pushMatchResult(playerOne!!.name, playerTwo!!.name, playerOneWinner, !playerOneWinner)
+
+                        delay(500)
+
+                        client.closeSession()
+
+                    } catch (exception : Exception) {
+                        exception.printStackTrace()
+                    }
+                }
+
                 gameOver = won
                 if (currentPlayer == playerOne) playerTwo!!.updateState(arrayOf(-1, -1), -1, false)
                 else playerOne!!.updateState(arrayOf(-1, -1), -y, false)
