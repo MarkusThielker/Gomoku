@@ -102,8 +102,6 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
 
         activeStage = stageGame
 
-        // TODO: add turn indicator
-
         // create player one overview
         lblPlayerNameOne = Label("${gameplay.playerOne!!.name} | Wins: ${gameplay.playerOne!!.wins} | Streak: ${gameplay.playerOne!!.streak}", application.skin)
         lblPlayerNameOne.apply {
