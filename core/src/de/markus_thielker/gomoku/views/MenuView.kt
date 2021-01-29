@@ -32,6 +32,12 @@ class MenuView(private val application : Application) : ScreenAdapter() {
     private lateinit var btnMenuGameView : TextButton
     private lateinit var btnMenuConnectionTest : TextButton
 
+    /**
+     * Automatic lifecycle call when the screen becomes visible.
+     *
+     * @author Markus Thielker
+     *
+     * */
     override fun show() {
 
         // default settings
@@ -88,6 +94,12 @@ class MenuView(private val application : Application) : ScreenAdapter() {
         stageMenu.addActor(btnMenuConnectionTest)
     }
 
+    /**
+     * Automatic lifecycle call for rendering the view. Called multiple times per second.
+     *
+     * @author Markus Thielker
+     *
+     * */
     override fun render(delta : Float) {
 
         // clear view before redrawing
@@ -103,6 +115,12 @@ class MenuView(private val application : Application) : ScreenAdapter() {
         stageMenu.draw()
     }
 
+    /**
+     * Automatic lifecycle call when the screen becomes invisible.
+     *
+     * @author Markus Thielker
+     *
+     * */
     override fun dispose() {
 
         // dispose visible views

@@ -34,6 +34,12 @@ class SetupView(private val application : Application) : ScreenAdapter() {
 
     private lateinit var btnBack : TextButton
 
+    /**
+     * Automatic lifecycle call when screen becomes visible.
+     *
+     * @author Markus Thielker
+     *
+     * */
     override fun show() {
 
         // get input for name of p1
@@ -90,7 +96,7 @@ class SetupView(private val application : Application) : ScreenAdapter() {
             })
         }
 
-        // add widgets to stageSetup
+        // add actors to stage
         stageSetup = Stage()
         Gdx.input.inputProcessor = stageSetup
 
@@ -102,6 +108,12 @@ class SetupView(private val application : Application) : ScreenAdapter() {
         stageSetup.addActor(btnBack)
     }
 
+    /**
+     * Automatic lifecycle call for rendering the view. Called multiple times per second.
+     *
+     * @author Markus Thielker
+     *
+     * */
     override fun render(delta : Float) {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
@@ -116,6 +128,12 @@ class SetupView(private val application : Application) : ScreenAdapter() {
         stageSetup.draw()
     }
 
+    /**
+     * Automatic lifecycle call when the screen becomes invisible.
+     *
+     * @author Markus Thielker
+     *
+     * */
     override fun dispose() {
         stageSetup.dispose()
     }

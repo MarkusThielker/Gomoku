@@ -36,7 +36,9 @@ class SimpleClient(server_uri : URI?) : WebSocketClient(server_uri) {
      * This method is called if the connection to the WebSocketServer is open.
      *
      * @param handshake_data [ServerHandshake]
-     * @author Dennis Jehle
+     *
+     * @author Markus Thielker
+     *
      */
     override fun onOpen(handshake_data : ServerHandshake) {
 
@@ -69,22 +71,34 @@ class SimpleClient(server_uri : URI?) : WebSocketClient(server_uri) {
      * This message is called if the WebSocketServer sends a String message to the client.
      *
      * @param message a String message from the WebSocketServer e.g. JSON message
-     * @author Dennis Jehle
+     *
+     * @author Markus Thielker
+     *
      */
     override fun onMessage(message : String) {
 
         // TODO: handle negative and missing feedback
 
         try {
+
+            // extract message
             val extractorMessage : ExtractorMessage = gson.fromJson(message, ExtractorMessage::class.java)
+
+            // differentiate messageTypes
             when (extractorMessage.messageType) {
+
+                // on WelcomeClient -> save userId
                 MessageType.WelcomeClient -> {
                     val welcomeClient : WelcomeClient = gson.fromJson(message, WelcomeClient::class.java)
                     uuid = welcomeClient.userId
                 }
+
+                // on HistorySaved -> ignore TODO
                 MessageType.HistorySaved -> {
                     val historySaved : HistorySaved = gson.fromJson(message, HistorySaved::class.java)
                 }
+
+                // on GoodbyeClient -> close connection
                 MessageType.GoodbyeClient -> {
                     val goodbyeClient : GoodbyeClient = gson.fromJson(message, GoodbyeClient::class.java)
                     this.close()
@@ -95,11 +109,14 @@ class SimpleClient(server_uri : URI?) : WebSocketClient(server_uri) {
             this.close() // see class description
         }
 
+        // debug received message
         println("received message: $message")
     }
 
     /**
-     * This function is called to close the WebSocketClient session
+     * This function is called to close the WebSocketClient session.
+     *
+     * @author Markus Thielker
      *
      * */
     fun closeSession() {
@@ -124,6 +141,9 @@ class SimpleClient(server_uri : URI?) : WebSocketClient(server_uri) {
      * @param playerTwoName name of player two
      * @param playerOneWinner if player one is the winner
      * @param playerTwoWinner if player two is the winner
+     *
+     * @author Markus Thielker
+     *
      */
     fun pushMatchResult(playerOneName : String, playerTwoName : String, playerOneWinner : Boolean, playerTwoWinner : Boolean) {
 

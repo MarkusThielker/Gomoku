@@ -32,9 +32,12 @@ class GomokuGame(
     var round = 1
 
     init {
+
+        // create player objects when not passed in constructor
         if (playerOne == null) playerOne = GomokuPlayer(config.playerNameOne, GomokuFieldColor.Black)
         if (playerTwo == null) playerTwo = GomokuPlayer(config.playerNameTwo, GomokuFieldColor.White)
 
+        // set current and winning player
         currentPlayer = playerOne!!
         winnerPlayer = playerOne!!
     }
@@ -76,21 +79,27 @@ class GomokuGame(
             // in case somebody won notify player instances
             won?.let {
 
-                // push match result to server
+                // push match result to server : coroutine to not block main thread
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
 
+                        // create client socket focusing on local server
                         val client = SimpleClient(URI(String.format("ws://%s:%d", "localhost", 42000)))
 
+                        // connect to passed connection
                         client.connect()
 
+                        // timeout to ensure connection
                         delay(500)
 
+                        // get winner and push to server
                         val playerOneWinner = currentPlayer == playerOne
                         client.pushMatchResult(playerOne!!.name, playerTwo!!.name, playerOneWinner, !playerOneWinner)
 
+                        // timeout to ensure connection
                         delay(500)
 
+                        // close connection by sending goodbye to server
                         client.closeSession()
 
                     } catch (exception : Exception) {
@@ -98,11 +107,15 @@ class GomokuGame(
                     }
                 }
 
+                // update game view
                 gameOver = won
+
+                // update player objects and
                 if (currentPlayer == playerOne) playerTwo!!.updateState(arrayOf(-1, -1), -1, false)
                 else playerOne!!.updateState(arrayOf(-1, -1), -y, false)
             }
 
+            // switch turn
             switchTurn()
 
         } else {
@@ -121,17 +134,21 @@ class GomokuGame(
      * */
     private fun trace(mid : GomokuField, dir : GomokuFieldDirection) {
 
+        // get field coordinates
         val x = mid.pos[0]
         val y = mid.pos[1]
 
+        // declare values for further process
         var oneSkipped = false
         var one : GomokuField? = null
 
         var twoSkipped = false
         var two : GomokuField? = null
 
+        // check for validity for neighbored fields
         when (dir) {
 
+            // check for horizontal neighbors
             GomokuFieldDirection.Horizontal -> {
 
                 oneSkipped = x <= 0
@@ -141,6 +158,7 @@ class GomokuGame(
                 if (!twoSkipped) two = board[x + 1][y]
             }
 
+            // check for vertical neighbors
             GomokuFieldDirection.Vertical -> {
 
                 oneSkipped = y <= 0
@@ -150,6 +168,7 @@ class GomokuGame(
                 if (!twoSkipped) two = board[x][y + 1]
             }
 
+            // check for diagonal neighbors (left-above and right-below)
             GomokuFieldDirection.DiagonalTLBR -> {
 
                 oneSkipped = x <= 0 || y <= 0
@@ -159,6 +178,7 @@ class GomokuGame(
                 if (!twoSkipped) two = board[x + 1][y + 1]
             }
 
+            // check for diagonal neighbors (right-above and left-below)
             GomokuFieldDirection.DiagonalBLTR -> {
 
                 oneSkipped = x >= 14 || y <= 0
@@ -267,6 +287,7 @@ class GomokuGame(
      * */
     private fun updateList(from : GomokuField, to : GomokuField, length : Int, dir : GomokuFieldDirection) {
 
+        // search for connection already in list
         listOfLinks.forEach { item ->
 
             if (item.from == from && item.dir == dir) {
@@ -280,6 +301,7 @@ class GomokuGame(
             }
         }
 
+        // line only reached if connection not in list -> add connection
         listOfLinks.add(GomokuFieldConnection(from, to, length, dir))
     }
 
@@ -320,12 +342,15 @@ class GomokuGame(
      * */
     private fun switchTurn() {
 
+        // differentiate for opening rules
         when (config.opening) {
+
             GomokuOpening.Standard -> {
 
                 // switch current player
                 switchPlayer()
             }
+
             GomokuOpening.Swap2 -> {
 
                 // first three stones -> player one | switching colors
@@ -337,31 +362,39 @@ class GomokuGame(
                     }
                     round == 3 -> {
 
+                        // switch player to indicate who is selecting opening procedure
                         switchPlayer()
 
+                        // create dialog with result callback
                         val dialog = object : Dialog("How to proceed", parentView.application.skin) {
 
+                            // execute on result selected
                             override fun result(result : Any) {
 
+                                // notify UI for result received
                                 parentView.onResultReceived()
 
-                                println("Option: $result")
-
+                                // differentiate selections
                                 when (result) {
+
+                                    // on "play white"
                                     1 -> {
                                         val otherPlayer = if (currentPlayer == playerOne) playerTwo!! else playerOne!!
 
                                         otherPlayer.color = GomokuFieldColor.Black
                                         currentPlayer.color = GomokuFieldColor.White
                                     }
+
+                                    // on "play black"
                                     2 -> {
                                         currentPlayer.color = GomokuFieldColor.Black
                                         switchPlayer()
                                         currentPlayer.color = GomokuFieldColor.White
                                     }
+
+                                    // on "opponent decides"
                                     3 -> {
                                         round = 2
-
                                         val otherPlayer = if (currentPlayer == playerOne) playerTwo!! else playerOne!!
                                         otherPlayer.color = GomokuFieldColor.White
                                     }
@@ -369,11 +402,13 @@ class GomokuGame(
                             }
                         }
 
+                        // add buttons to dialog
                         dialog.button("Play White", 1)
                         dialog.button("Play Black", 2)
                         dialog.button("Opponent decides", 3)
 
-                        parentView.swapTwoDialog(dialog)
+                        // show dialog on UI
+                        parentView.showDialog(dialog)
                     }
                     round > 3 -> {
 
@@ -388,6 +423,12 @@ class GomokuGame(
         round++
     }
 
+    /**
+     * This function changes the currentPlayer to the player, not being the currentPlayer
+     *
+     * @author Markus Thielker
+     *
+     * */
     private fun switchPlayer() {
         currentPlayer = if (currentPlayer == playerOne) playerTwo!! else playerOne!!
     }

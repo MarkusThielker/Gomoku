@@ -79,6 +79,12 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
     private var cooldown = false
     private val cooldownLength : Long = 250
 
+    /**
+     * Automatic lifecycle call when screen becomes visible.
+     *
+     * @author Markus Thielker
+     *
+     * */
     override fun show() {
 
         // initialize using current screen size
@@ -138,6 +144,12 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
         stageOver = setupStageOver()
     }
 
+    /**
+     * Automatic lifecycle call for rendering the view. Called multiple times per second.
+     *
+     * @author Markus Thielker
+     *
+     * */
     override fun render(delta : Float) {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
@@ -150,10 +162,12 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
         activeStage.batch.end()
 
         if (gameplay.gameOver) {
+
             activeStage = stageOver
             Gdx.input.inputProcessor = stageOver
             lblGameOver.setText("${gameplay.winnerPlayer.name} has won the game!")
             gamePaused = true
+
         } else {
 
             // update camera and batch
@@ -291,10 +305,24 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
         activeStage.draw()
     }
 
+    /**
+     * Automatic lifecycle call when the screen becomes invisible.
+     *
+     * @author Markus Thielker
+     *
+     * */
     override fun dispose() {
         stageGame.dispose()
     }
 
+    /**
+     * Creates the pause dialog for the pauseDialog.
+     *
+     * @return returns the created stage
+     *
+     * @author Markus Thielker
+     *
+     * */
     private fun setupPauseDialog() : Dialog {
 
         // create pause dialog
@@ -342,15 +370,25 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
         return dialog
     }
 
+    /**
+     * Create the stage for the gameOverView.
+     *
+     * @return returns the created stage
+     *
+     * @author Markus Thielker
+     *
+     * */
     private fun setupStageOver() : Stage {
 
         val stage = Stage()
 
+        // create winner label
         lblGameOver = Label("${gameplay.winnerPlayer.name} won the game!", application.skin)
         lblGameOver.apply {
             setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2 + 20, Align.center)
         }
 
+        // create button to rematch with same player objects
         btnReplay = TextButton("Rematch", application.skin)
         btnReplay.apply {
             setSize(150f, 30f)
@@ -366,6 +404,7 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
             })
         }
 
+        // create button to return to menu
         btnBackToMenu = TextButton("Back to Menu", application.skin)
         btnBackToMenu.apply {
             setSize(150f, 30f)
@@ -377,6 +416,7 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
             })
         }
 
+        // add all actors to stage
         stage.addActor(lblGameOver)
         stage.addActor(btnReplay)
         stage.addActor(btnBackToMenu)
@@ -384,26 +424,55 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
         return stage
     }
 
-    fun swapTwoDialog(dialog : Dialog) {
+    /**
+     * Display a dialog in the bottom of the screen. Game input is stopped and only continued by verifying via onResultReceived().
+     *
+     * @param dialog dialog object to display
+     *
+     * @author Markus Thielker
+     *
+     * */
+    fun showDialog(dialog : Dialog) {
+
+        // pause game (stop input | no dialog)
         gamePaused = !gamePaused
         btnGamePause.isVisible = !btnGamePause.isVisible
 
+        // show dialog
         dialog.show(activeStage)
 
+        // resize dialog size
         dialog.height = 60f
         dialog.width = 400f
 
+        // reposition dialog
         dialog.setPosition((Gdx.graphics.width / 2).toFloat(), 40f, Align.center)
     }
 
+    /**
+     * Verify that a previously displayed dialog has been closed.
+     *
+     * @author Markus Thielker
+     *
+     * */
+    fun onResultReceived() {
+
+        // reactivate input when dialog result received
+        gamePaused = !gamePaused
+        btnGamePause.isVisible = !btnGamePause.isVisible
+    }
+
+    /**
+     * This function gets called to pause the game and show the pause dialog.
+     *
+     * @author Markus Thielker
+     *
+     * */
     private fun switchPause() {
+
+        // pause game (stop input) and show dialog
         gamePaused = !gamePaused
         btnGamePause.isVisible = !btnGamePause.isVisible
         dialogPause.isVisible = gamePaused
-    }
-
-    fun onResultReceived() {
-        gamePaused = !gamePaused
-        btnGamePause.isVisible = !btnGamePause.isVisible
     }
 }
