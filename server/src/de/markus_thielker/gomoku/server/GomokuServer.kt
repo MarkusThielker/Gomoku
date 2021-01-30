@@ -94,6 +94,22 @@ class GomokuServer(address : InetSocketAddress?) : WebSocketServer(address) {
                     val welcomeClientJson : String = gson.toJson(welcomeClient)
                     conn.send(welcomeClientJson)
                 }
+                MessageType.PingRequest -> {
+
+                    val pingRequest : PingRequest = gson.fromJson(message, PingRequest::class.java)
+
+                    // create new HelloServer message object
+                    val response = PingResponse(pingRequest.timestamp)
+
+                    // create JSON String from HelloServer message object
+                    val responseJSON : String = gson.toJson(response)
+
+                    // send JSON encoded HelloServer message as String to the connected WebSocket server
+                    conn.send(responseJSON)
+
+                    // 'debug' output
+                    println("pingResponse sent")
+                }
                 MessageType.HistoryPush -> {
                     val historyPush : HistoryPush = gson.fromJson(message, HistoryPush::class.java)
                     if (!legalUserIds.contains(historyPush.userId)) {

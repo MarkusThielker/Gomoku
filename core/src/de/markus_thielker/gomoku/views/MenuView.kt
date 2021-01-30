@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
 import de.markus_thielker.gomoku.Application
+import de.markus_thielker.gomoku.socket.NetworkController
 import de.markus_thielker.gomoku.socket.SimpleClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,7 @@ import kotlin.system.exitProcess
  * @author Markus Thielker
  *
  */
-class MenuView(private val application : Application) : ApplicationView() {
+class MenuView(private val application : Application) : ApplicationView(), NetworkController {
 
     private lateinit var stageMenu : Stage
 
@@ -77,9 +78,13 @@ class MenuView(private val application : Application) : ApplicationView() {
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
 
-                            val client = SimpleClient(URI(String.format("ws://%s:%d", "localhost", 42000)))
+                            val client = SimpleClient(URI(String.format("ws://%s:%d", "localhost", 42000)), this@MenuView)
 
                             client.connect()
+
+                            delay(500)
+
+                            client.requestPing()
 
                             delay(500)
 
@@ -143,5 +148,18 @@ class MenuView(private val application : Application) : ApplicationView() {
 
         // dispose visible views
         stageMenu.dispose()
+    }
+
+    /**
+     * This function sets how a received ping response is handled.
+     *
+     * @param ping ms the request needed to be answered
+     *
+     * @author Markus Thielker
+     *
+     * */
+    override fun pongReceived(ping : Long) {
+
+        showMessage(stageMenu, "Server-Verbindung", "Eine Server-Verbindung besteht (${ping}ms)", application.skin)
     }
 }

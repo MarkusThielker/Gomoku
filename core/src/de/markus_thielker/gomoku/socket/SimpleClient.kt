@@ -8,6 +8,7 @@ import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import java.net.URI
 import java.nio.ByteBuffer
+import java.sql.Timestamp
 import java.util.*
 
 /**
@@ -22,7 +23,7 @@ import java.util.*
  *
  * @author Dennis Jehle
  */
-class SimpleClient(server_uri : URI?) : WebSocketClient(server_uri) {
+class SimpleClient(server_uri : URI?, private val networkController : NetworkController?) : WebSocketClient(server_uri) {
 
     // 'Google Gson is a java library that can be used to convert Java Object
     // into their JSON representation.'
@@ -53,6 +54,27 @@ class SimpleClient(server_uri : URI?) : WebSocketClient(server_uri) {
 
         // 'debug' output
         println("new connection opened")
+    }
+
+    /**
+     * This function sends a pingRequest to the server.
+     *
+     * @author Markus Thielker
+     *
+     * */
+    fun requestPing() {
+
+        // create new PingRequest message object
+        val message = PingRequest(Timestamp(System.currentTimeMillis()))
+
+        // create JSON String from PingRequest message object
+        val messageJSON : String = gson.toJson(message)
+
+        // send JSON encoded PingRequest message as String to the connected WebSocket server
+        send(messageJSON)
+
+        // 'debug' output
+        println("pingRequest sent")
     }
 
     /**
@@ -91,6 +113,12 @@ class SimpleClient(server_uri : URI?) : WebSocketClient(server_uri) {
                 MessageType.WelcomeClient -> {
                     val welcomeClient : WelcomeClient = gson.fromJson(message, WelcomeClient::class.java)
                     uuid = welcomeClient.userId
+                }
+
+                // on PingResponse -> notify NetworkController
+                MessageType.PingResponse -> {
+                    val pingResponse : PingResponse = gson.fromJson(message, PingResponse::class.java)
+                    networkController!!.pongReceived(Timestamp(System.currentTimeMillis()).time - pingResponse.timestamp.time)
                 }
 
                 // on HistorySaved -> ignore TODO

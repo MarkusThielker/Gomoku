@@ -73,7 +73,7 @@ class GomokuGame(
                     try {
 
                         // create client socket focusing on local server
-                        val client = SimpleClient(URI(String.format("ws://%s:%d", "localhost", 42000)))
+                        val client = SimpleClient(URI(String.format("ws://%s:%d", "localhost", 42000)), null)
 
                         // connect to passed connection
                         client.connect()
