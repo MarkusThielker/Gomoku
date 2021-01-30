@@ -121,14 +121,18 @@ class SimpleClient(server_uri : URI?, private val networkController : NetworkCon
                     networkController!!.onPingResponse(Timestamp(System.currentTimeMillis()).time - pingResponse.timestamp.time)
                 }
 
-                // on HistorySaved -> ignore TODO
+                // on HistorySaved -> notify Listener
                 MessageType.HistorySaved -> {
-                    val historySaved : HistorySaved = gson.fromJson(message, HistorySaved::class.java)
+                    networkController!!.onHistorySaved()
+                }
+
+                // on HistoryNotSaved -> notify Listener
+                MessageType.HistoryNotSaved -> {
+                    networkController!!.onHistoryNotSaved()
                 }
 
                 // on GoodbyeClient -> close connection
                 MessageType.GoodbyeClient -> {
-                    val goodbyeClient : GoodbyeClient = gson.fromJson(message, GoodbyeClient::class.java)
                     this.close()
                 }
                 else -> this.close() // see class description
