@@ -107,12 +107,14 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
         // create player one overview
         lblPlayerNameOne = Label("${gameplay.playerOne!!.name} | Siege: ${gameplay.playerOne!!.wins} | Sieges-Serie: ${gameplay.playerOne!!.streak}", application.skin)
         lblPlayerNameOne.apply {
+            style = generateLabelStyle(text.toString(), bold = true)
             setPosition((Gdx.graphics.width / 2 - 15 - lblPlayerNameOne.width / 2), (Gdx.graphics.height - 50).toFloat(), Align.right)
         }
 
         // create player two overview
         lblPlayerNameTwo = Label("${gameplay.playerTwo!!.name} | Siege: ${gameplay.playerTwo!!.wins} | Sieges-Serie: ${gameplay.playerTwo!!.streak}", application.skin)
         lblPlayerNameTwo.apply {
+            style = generateLabelStyle(text.toString(), bold = true)
             setPosition((Gdx.graphics.width / 2 + 15 + lblPlayerNameTwo.width / 2), (Gdx.graphics.height - 50).toFloat(), Align.left)
         }
 
@@ -164,7 +166,12 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
             Gdx.input.inputProcessor = stageOver
 
             // check if win or tie
-            if (gameplay.winnerPlayer != null) lblGameOver.setText("${gameplay.winnerPlayer!!.name} hat das Spiel gewonnen!")
+            if (gameplay.winnerPlayer != null)
+                lblGameOver.apply {
+                    setText("${gameplay.winnerPlayer!!.name} hat das Spiel gewonnen!")
+                    style = generateLabelStyle(text.toString(), 35, bold = true)
+                }
+
 
             gamePaused = true
 
@@ -335,12 +342,14 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
         // create pause dialog title label
         lblPauseHeading = Label("Pause", application.skin)
         lblPauseHeading.apply {
+            style = generateLabelStyle(text.toString(), bold = true)
             setPosition(dialog.width / 2, dialog.height / 2 + 30, Align.center)
         }
 
         // create pause dialog continue button
         btnPauseContinue = TextButton("Fortfahren", application.skin)
         btnPauseContinue.apply {
+            label.style = generateLabelStyle(text.toString())
             setSize(200f, 30f)
             setPosition(dialog.width / 2, dialog.height / 2 - 10, Align.center)
             addListener(object : ClickListener() {
@@ -353,6 +362,7 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
         // create pause dialog back button
         btnPauseBack = TextButton("Zurück zum Menü", application.skin)
         btnPauseBack.apply {
+            label.style = generateLabelStyle(text.toString())
             setSize(200f, 30f)
             setPosition(dialog.width / 2, dialog.height / 2 - 50, Align.center)
             addListener(object : ClickListener() {
@@ -385,14 +395,16 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
         // create winner label
         lblGameOver = Label("Unentschieden! Klicke auf \"Revanche\" um noch einmal zu spielen.", application.skin)
         lblGameOver.apply {
-            setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2 + 20, Align.center)
+            style = generateLabelStyle(text.toString(), bold = true)
+            setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2 + 30, Align.center)
             setAlignment(Align.center)
         }
 
         // create button to rematch with same player objects
         btnReplay = TextButton("Revanche", application.skin)
         btnReplay.apply {
-            setSize(150f, 30f)
+            label.style = generateLabelStyle(text.toString())
+            setSize(200f, 30f)
             setPosition((Gdx.graphics.width).toFloat() / 2 + 5, (Gdx.graphics.height).toFloat() / 2, Align.topLeft)
             addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
@@ -408,7 +420,8 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
         // create button to return to menu
         btnBackToMenu = TextButton("Zurück zum Menü", application.skin)
         btnBackToMenu.apply {
-            setSize(150f, 30f)
+            label.style = generateLabelStyle(text.toString())
+            setSize(200f, 30f)
             setPosition((Gdx.graphics.width).toFloat() / 2 - 5, (Gdx.graphics.height).toFloat() / 2, Align.topRight)
             addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {

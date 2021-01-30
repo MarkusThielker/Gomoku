@@ -45,6 +45,7 @@ class SetupView(private val application : Application) : ApplicationView() {
         txtNameOne = TextField("", application.skin)
         txtNameOne.apply {
             text = "Spieler 1"
+            maxLength = 15
             setSize(150f, 30f)
             setPosition((Gdx.graphics.width).toFloat() / 2 - 5, (Gdx.graphics.height).toFloat() / 2 + 15, Align.bottomRight)
         }
@@ -53,6 +54,7 @@ class SetupView(private val application : Application) : ApplicationView() {
         txtNameTwo = TextField("", application.skin)
         txtNameTwo.apply {
             text = "Spieler 2"
+            maxLength = 15
             setSize(150f, 30f)
             setPosition((Gdx.graphics.width).toFloat() / 2 + 5, (Gdx.graphics.height).toFloat() / 2 + 15, Align.bottomLeft)
         }
@@ -68,6 +70,7 @@ class SetupView(private val application : Application) : ApplicationView() {
         // get input to start game
         btnStartGame = TextButton("Spiel starten", application.skin)
         btnStartGame.apply {
+            label.style = generateLabelStyle(text.toString())
             setSize(310f, 30f)
             setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2 - 50, Align.center)
             addListener(object : ClickListener() {
@@ -86,7 +89,8 @@ class SetupView(private val application : Application) : ApplicationView() {
         // get input to start game
         btnBack = TextButton("Zurück zum Menü", application.skin)
         btnBack.apply {
-            setSize(150f, 30f)
+            label.style = generateLabelStyle(text.toString())
+            setSize(200f, 30f)
             setPosition(30f, 30f, Align.bottomLeft)
             addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent?, x : Float, y : Float) {

@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.utils.Align
 import de.markus_thielker.gomoku.Application
 import de.markus_thielker.gomoku.socket.SimpleClient
 import kotlinx.coroutines.CoroutineScope
@@ -46,13 +47,15 @@ class MenuView(private val application : Application) : ApplicationView() {
         // create game view title label
         lblMenuHeading = Label("Gomoku", application.skin)
         lblMenuHeading.apply {
-            setPosition((Gdx.graphics.width / 2).toFloat() - (lblMenuHeading.width / 2), (Gdx.graphics.height / 2).toFloat() + 40)
+            style = generateLabelStyle(text.toString(), 120, bold = true, border = true)
+            setPosition((Gdx.graphics.width / 2).toFloat(), (Gdx.graphics.height / 2 + 170).toFloat(), Align.center)
         }
 
         // create menu game view button
         btnMenuGameView = TextButton("Spielen!", application.skin)
         btnMenuGameView.apply {
-            setSize(250f, 30f)
+            label.style = generateLabelStyle(text.toString())
+            setSize(300f, 30f)
             setPosition((Gdx.graphics.width / 2).toFloat() - (btnMenuGameView.width / 2), (Gdx.graphics.height / 2).toFloat())
             addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
@@ -64,7 +67,8 @@ class MenuView(private val application : Application) : ApplicationView() {
         // create connection test button
         btnMenuConnectionTest = TextButton("Server-Verbindung überprüfen", application.skin)
         btnMenuConnectionTest.apply {
-            setSize(250f, 30f)
+            label.style = generateLabelStyle(text.toString())
+            setSize(300f, 30f)
             setPosition((Gdx.graphics.width / 2).toFloat() - (btnMenuConnectionTest.width / 2), (Gdx.graphics.height / 2).toFloat() - 40)
             addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
