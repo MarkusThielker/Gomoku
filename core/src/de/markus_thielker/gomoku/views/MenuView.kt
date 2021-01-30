@@ -1,7 +1,6 @@
 package de.markus_thielker.gomoku.views
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Label
@@ -123,7 +122,6 @@ class MenuView(private val application : Application) : ApplicationView() {
     override fun render(delta : Float) {
 
         // clear view before redrawing
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         stageMenu.act()
 
         // draw background to batch

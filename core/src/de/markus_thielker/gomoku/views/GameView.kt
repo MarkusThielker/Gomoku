@@ -3,7 +3,6 @@ package de.markus_thielker.gomoku.views
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -151,7 +150,6 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
      * */
     override fun render(delta : Float) {
 
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         activeStage.act()
 
         // draw background to batch
@@ -246,7 +244,7 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
                     shapeRenderer.end()
                 }
 
-                if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && minDist < 100 && !cooldown) {
+                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && minDist < 100 && !cooldown) {
                     gameplay.stonePlaced(minX, minY)
 
                     GlobalScope.launch {
