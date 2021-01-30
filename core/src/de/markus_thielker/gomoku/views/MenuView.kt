@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.URI
+import kotlin.system.exitProcess
 
 /**
  * Main navigation instance used for starting games and checking the connection
@@ -31,6 +32,7 @@ class MenuView(private val application : Application) : ApplicationView() {
     private lateinit var lblMenuHeading : Label
     private lateinit var btnMenuGameView : TextButton
     private lateinit var btnMenuConnectionTest : TextButton
+    private lateinit var btnCloseApplication : TextButton
 
     /**
      * Automatic lifecycle call when the screen becomes visible.
@@ -91,10 +93,24 @@ class MenuView(private val application : Application) : ApplicationView() {
             })
         }
 
+        // create menu game view button
+        btnCloseApplication = TextButton("Gomoku verlassen", application.skin)
+        btnCloseApplication.apply {
+            label.style = generateLabelStyle(text.toString())
+            setSize(300f, 30f)
+            setPosition((Gdx.graphics.width / 2).toFloat() - (btnMenuGameView.width / 2), (Gdx.graphics.height / 2).toFloat() - 80)
+            addListener(object : ClickListener() {
+                override fun clicked(event : InputEvent, x : Float, y : Float) {
+                    exitProcess(1)
+                }
+            })
+        }
+
         // add widgets to menu stage
         stageMenu.addActor(lblMenuHeading)
         stageMenu.addActor(btnMenuGameView)
         stageMenu.addActor(btnMenuConnectionTest)
+        stageMenu.addActor(btnCloseApplication)
     }
 
     /**
