@@ -28,7 +28,7 @@ class GomokuGame(
     var gameOver = false
     var winnerPlayer : GomokuPlayer? = null
 
-    var currentPlayer : GomokuPlayer
+    var currentPlayer = playerOne
     var round = 1
 
     /**
