@@ -101,6 +101,8 @@ class GomokuGame(
                         // close connection by sending goodbye to server
                         client.closeSession()
 
+                        parentView.sendMessage("Gespeichert", "Spielergebnis auf Server gespeichert")
+
                     } catch (exception : Exception) {
                         exception.printStackTrace()
                     }
@@ -120,7 +122,7 @@ class GomokuGame(
             switchTurn()
 
         } else {
-            parentView.sendMessage("Error", "On this field is already a stone placed.")
+            parentView.sendMessage("Fehler", "Auf diesem Feld liegt bereits ein Stein")
         }
     }
 
@@ -367,7 +369,7 @@ class GomokuGame(
                         switchPlayer()
 
                         // create dialog with result callback
-                        val dialog = object : Dialog("How to proceed", parentView.application.skin) {
+                        val dialog = object : Dialog("Eröffnungsregel", parentView.application.skin) {
 
                             // execute on result selected
                             override fun result(result : Any) {
@@ -404,9 +406,9 @@ class GomokuGame(
                         }
 
                         // add buttons to dialog
-                        dialog.button("Play White", 1)
-                        dialog.button("Play Black", 2)
-                        dialog.button("Opponent decides", 3)
+                        dialog.button("Weiße Steine spielen", 1)
+                        dialog.button("Schwarze Steine spielen", 2)
+                        dialog.button("Der Gegner entscheidet", 3)
 
                         // show dialog on UI
                         parentView.showDialog(dialog)

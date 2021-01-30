@@ -44,7 +44,7 @@ class SetupView(private val application : Application) : ApplicationView() {
         // get input for name of p1
         txtNameOne = TextField("", application.skin)
         txtNameOne.apply {
-            text = "Player1"
+            text = "Spieler 1"
             setSize(150f, 30f)
             setPosition((Gdx.graphics.width).toFloat() / 2 - 5, (Gdx.graphics.height).toFloat() / 2 + 15, Align.bottomRight)
         }
@@ -52,7 +52,7 @@ class SetupView(private val application : Application) : ApplicationView() {
         // get input for name of p2
         txtNameTwo = TextField("", application.skin)
         txtNameTwo.apply {
-            text = "Player2"
+            text = "Spieler 2"
             setSize(150f, 30f)
             setPosition((Gdx.graphics.width).toFloat() / 2 + 5, (Gdx.graphics.height).toFloat() / 2 + 15, Align.bottomLeft)
         }
@@ -66,7 +66,7 @@ class SetupView(private val application : Application) : ApplicationView() {
         }
 
         // get input to start game
-        btnStartGame = TextButton("Start the game", application.skin)
+        btnStartGame = TextButton("Spiel starten", application.skin)
         btnStartGame.apply {
             setSize(310f, 30f)
             setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2 - 50, Align.center)
@@ -84,9 +84,9 @@ class SetupView(private val application : Application) : ApplicationView() {
         }
 
         // get input to start game
-        btnBack = TextButton("Back to menu", application.skin)
+        btnBack = TextButton("Zurück zum Menü", application.skin)
         btnBack.apply {
-            setSize(125f, 30f)
+            setSize(150f, 30f)
             setPosition(30f, 30f, Align.bottomLeft)
             addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent?, x : Float, y : Float) {

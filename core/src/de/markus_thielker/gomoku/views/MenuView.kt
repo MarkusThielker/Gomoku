@@ -44,15 +44,15 @@ class MenuView(private val application : Application) : ApplicationView() {
         Gdx.input.inputProcessor = stageMenu
 
         // create game view title label
-        lblMenuHeading = Label("MenuView", application.skin)
+        lblMenuHeading = Label("Gomoku", application.skin)
         lblMenuHeading.apply {
             setPosition((Gdx.graphics.width / 2).toFloat() - (lblMenuHeading.width / 2), (Gdx.graphics.height / 2).toFloat() + 40)
         }
 
         // create menu game view button
-        btnMenuGameView = TextButton("Play!", application.skin)
+        btnMenuGameView = TextButton("Spielen!", application.skin)
         btnMenuGameView.apply {
-            setSize(150f, 30f)
+            setSize(250f, 30f)
             setPosition((Gdx.graphics.width / 2).toFloat() - (btnMenuGameView.width / 2), (Gdx.graphics.height / 2).toFloat())
             addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
@@ -62,9 +62,9 @@ class MenuView(private val application : Application) : ApplicationView() {
         }
 
         // create connection test button
-        btnMenuConnectionTest = TextButton("Check connection", application.skin)
+        btnMenuConnectionTest = TextButton("Server-Verbindung überprüfen", application.skin)
         btnMenuConnectionTest.apply {
-            setSize(150f, 30f)
+            setSize(250f, 30f)
             setPosition((Gdx.graphics.width / 2).toFloat() - (btnMenuConnectionTest.width / 2), (Gdx.graphics.height / 2).toFloat() - 40)
             addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
