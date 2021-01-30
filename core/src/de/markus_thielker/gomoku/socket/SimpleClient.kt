@@ -118,7 +118,7 @@ class SimpleClient(server_uri : URI?, private val networkController : NetworkCon
                 // on PingResponse -> notify NetworkController
                 MessageType.PingResponse -> {
                     val pingResponse : PingResponse = gson.fromJson(message, PingResponse::class.java)
-                    networkController!!.pongReceived(Timestamp(System.currentTimeMillis()).time - pingResponse.timestamp.time)
+                    networkController!!.onPingResponse(Timestamp(System.currentTimeMillis()).time - pingResponse.timestamp.time)
                 }
 
                 // on HistorySaved -> ignore TODO

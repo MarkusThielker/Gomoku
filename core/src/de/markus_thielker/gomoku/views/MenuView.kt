@@ -151,15 +151,14 @@ class MenuView(private val application : Application) : ApplicationView(), Netwo
     }
 
     /**
-     * This function sets how a received ping response is handled.
+     * This function is called when the server answers on a ping request.
      *
      * @param ping ms the request needed to be answered
      *
      * @author Markus Thielker
      *
      * */
-    override fun pongReceived(ping : Long) {
-
+    override fun onPingResponse(ping : Long) {
         showMessage(stageMenu, "Server-Verbindung", "Eine Server-Verbindung besteht (${ping}ms)", application.skin)
     }
 }
