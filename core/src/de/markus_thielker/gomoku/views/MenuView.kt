@@ -51,6 +51,7 @@ class MenuView(private val application : Application) : ApplicationView() {
         lblMenuHeading.apply {
             style = generateLabelStyle(text.toString(), 120, bold = true, border = true)
             setPosition((Gdx.graphics.width / 2).toFloat(), (Gdx.graphics.height / 2 + 170).toFloat(), Align.center)
+            setAlignment(Align.center)
         }
 
         // create menu game view button
