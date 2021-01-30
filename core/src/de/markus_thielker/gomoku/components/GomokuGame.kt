@@ -17,9 +17,9 @@ import java.net.URI
  * */
 class GomokuGame(
     private val parentView : GameView,
-    private val config : GomokuConfiguration,
-    var playerOne : GomokuPlayer?,
-    var playerTwo : GomokuPlayer?
+    private val opening : GomokuOpening,
+    var playerOne : GomokuPlayer,
+    var playerTwo : GomokuPlayer
 ) {
 
     val board : Array<Array<GomokuField?>> = Array(15) { Array(15) { null } }
@@ -30,16 +30,6 @@ class GomokuGame(
 
     var currentPlayer : GomokuPlayer
     var round = 1
-
-    init {
-
-        // create player objects when not passed in constructor
-        if (playerOne == null) playerOne = GomokuPlayer(config.playerNameOne, GomokuFieldColor.Black)
-        if (playerTwo == null) playerTwo = GomokuPlayer(config.playerNameTwo, GomokuFieldColor.White)
-
-        // set current and winning player
-        currentPlayer = playerOne!!
-    }
 
     /**
      * Call when a stone is placed. Checks if passed position is valid and if true updates
@@ -93,7 +83,7 @@ class GomokuGame(
 
                         // get winner and push to server
                         val playerOneWinner = currentPlayer == playerOne
-                        client.pushMatchResult(playerOne!!.name, playerTwo!!.name, playerOneWinner, !playerOneWinner)
+                        client.pushMatchResult(playerOne.name, playerTwo.name, playerOneWinner, !playerOneWinner)
 
                         // timeout to ensure connection
                         delay(500)
@@ -112,11 +102,11 @@ class GomokuGame(
                 gameOver = won
 
                 // update player objects and
-                if (currentPlayer == playerOne) playerTwo!!.updateState(arrayOf(-1, -1), -1, false)
-                else playerOne!!.updateState(arrayOf(-1, -1), -y, false)
+                if (currentPlayer == playerOne) playerTwo.updateState(arrayOf(-1, -1), -1, false)
+                else playerOne.updateState(arrayOf(-1, -1), -y, false)
             }
 
-            if ((playerOne!!.placed + playerTwo!!.placed) == parentView.gridSize * parentView.gridSize) gameOver = true
+            if ((playerOne.placed + playerTwo.placed) == parentView.gridSize * parentView.gridSize) gameOver = true
 
             // switch turn
             switchTurn()
@@ -346,7 +336,7 @@ class GomokuGame(
     private fun switchTurn() {
 
         // differentiate for opening rules
-        when (config.opening) {
+        when (opening) {
 
             GomokuOpening.Standard -> {
 
@@ -382,7 +372,7 @@ class GomokuGame(
 
                                     // on "play white"
                                     1 -> {
-                                        val otherPlayer = if (currentPlayer == playerOne) playerTwo!! else playerOne!!
+                                        val otherPlayer = if (currentPlayer == playerOne) playerTwo else playerOne
 
                                         otherPlayer.color = GomokuFieldColor.Black
                                         currentPlayer.color = GomokuFieldColor.White
@@ -398,7 +388,7 @@ class GomokuGame(
                                     // on "opponent decides"
                                     3 -> {
                                         round = 2
-                                        val otherPlayer = if (currentPlayer == playerOne) playerTwo!! else playerOne!!
+                                        val otherPlayer = if (currentPlayer == playerOne) playerTwo else playerOne
                                         otherPlayer.color = GomokuFieldColor.White
                                     }
                                 }
@@ -433,7 +423,7 @@ class GomokuGame(
      *
      * */
     private fun switchPlayer() {
-        currentPlayer = if (currentPlayer == playerOne) playerTwo!! else playerOne!!
+        currentPlayer = if (currentPlayer == playerOne) playerTwo else playerOne
     }
 
     /**

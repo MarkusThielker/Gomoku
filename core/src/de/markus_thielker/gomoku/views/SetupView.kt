@@ -11,8 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import de.markus_thielker.gomoku.Application
-import de.markus_thielker.gomoku.components.GomokuConfiguration
+import de.markus_thielker.gomoku.components.GomokuFieldColor
 import de.markus_thielker.gomoku.components.GomokuOpening
+import de.markus_thielker.gomoku.components.GomokuPlayer
 
 /**
  * This screen is shown before starting a game of gomoku to setup the game configuration
@@ -78,9 +79,9 @@ class SetupView(private val application : Application) : ApplicationView() {
                     application.screen =
                         GameView(
                             application,
-                            GomokuConfiguration(txtNameOne.text, txtNameTwo.text, selectOpening.selected),
-                            null,
-                            null
+                            selectOpening.selected,
+                            GomokuPlayer(txtNameOne.text, GomokuFieldColor.Black),
+                            GomokuPlayer(txtNameTwo.text, GomokuFieldColor.White),
                         )
                 }
             })

@@ -22,9 +22,9 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import de.markus_thielker.gomoku.Application
-import de.markus_thielker.gomoku.components.GomokuConfiguration
 import de.markus_thielker.gomoku.components.GomokuFieldColor
 import de.markus_thielker.gomoku.components.GomokuGame
+import de.markus_thielker.gomoku.components.GomokuOpening
 import de.markus_thielker.gomoku.components.GomokuPlayer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -39,10 +39,10 @@ import kotlin.math.sqrt
  * @author Markus Thielker
  *
  */
-class GameView(val application : Application, var config : GomokuConfiguration, playerOne : GomokuPlayer?, playerTwo : GomokuPlayer?) : ApplicationView() {
+class GameView(val application : Application, var opening : GomokuOpening, playerOne : GomokuPlayer, playerTwo : GomokuPlayer) : ApplicationView() {
 
     // game interaction essentials
-    private val gameplay = GomokuGame(this, config, playerOne, playerTwo)
+    private val gameplay = GomokuGame(this, opening, playerOne, playerTwo)
     private var gamePaused = false
 
     private lateinit var activeStage : Stage
@@ -105,14 +105,14 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
         activeStage = stageGame
 
         // create player one overview
-        lblPlayerNameOne = Label("${gameplay.playerOne!!.name} | Siege: ${gameplay.playerOne!!.wins} | Sieges-Serie: ${gameplay.playerOne!!.streak}", application.skin)
+        lblPlayerNameOne = Label("${gameplay.playerOne.name} | Siege: ${gameplay.playerOne.wins} | Sieges-Serie: ${gameplay.playerOne.streak}", application.skin)
         lblPlayerNameOne.apply {
             style = generateLabelStyle(text.toString(), bold = true)
             setPosition((Gdx.graphics.width / 2 - 15 - lblPlayerNameOne.width / 2), (Gdx.graphics.height - 50).toFloat(), Align.right)
         }
 
         // create player two overview
-        lblPlayerNameTwo = Label("${gameplay.playerTwo!!.name} | Siege: ${gameplay.playerTwo!!.wins} | Sieges-Serie: ${gameplay.playerTwo!!.streak}", application.skin)
+        lblPlayerNameTwo = Label("${gameplay.playerTwo.name} | Siege: ${gameplay.playerTwo.wins} | Sieges-Serie: ${gameplay.playerTwo.streak}", application.skin)
         lblPlayerNameTwo.apply {
             style = generateLabelStyle(text.toString(), bold = true)
             setPosition((Gdx.graphics.width / 2 + 15 + lblPlayerNameTwo.width / 2), (Gdx.graphics.height - 50).toFloat(), Align.left)
@@ -409,10 +409,10 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
             addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
 
-                    gameplay.playerOne!!.color = GomokuFieldColor.Black
-                    gameplay.playerTwo!!.color = GomokuFieldColor.White
+                    gameplay.playerOne.color = GomokuFieldColor.Black
+                    gameplay.playerTwo.color = GomokuFieldColor.White
 
-                    application.screen = GameView(application, config, gameplay.playerOne, gameplay.playerTwo)
+                    application.screen = GameView(application, opening, gameplay.playerOne, gameplay.playerTwo)
                 }
             })
         }
