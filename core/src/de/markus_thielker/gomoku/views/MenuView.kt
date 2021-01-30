@@ -161,4 +161,12 @@ class MenuView(private val application : Application) : ApplicationView(), Netwo
     override fun onPingResponse(ping : Long) {
         showMessage(stageMenu, "Server-Verbindung", "Eine Server-Verbindung besteht (${ping}ms)", application.skin)
     }
+
+    override fun onHistorySaved() {
+        // no history pushing from this view
+    }
+
+    override fun onHistoryNotSaved() {
+        // no history pushing from this view
+    }
 }

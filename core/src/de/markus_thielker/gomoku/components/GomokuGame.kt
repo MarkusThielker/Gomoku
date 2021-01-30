@@ -1,6 +1,7 @@
 package de.markus_thielker.gomoku.components
 
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog
+import de.markus_thielker.gomoku.socket.NetworkController
 import de.markus_thielker.gomoku.socket.SimpleClient
 import de.markus_thielker.gomoku.views.GameView
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +21,7 @@ class GomokuGame(
     private val opening : GomokuOpening,
     var playerOne : GomokuPlayer,
     var playerTwo : GomokuPlayer
-) {
+) : NetworkController {
 
     val board : Array<Array<GomokuField?>> = Array(15) { Array(15) { null } }
     private val listOfLinks = ArrayList<GomokuFieldConnection>()
@@ -73,7 +74,7 @@ class GomokuGame(
                     try {
 
                         // create client socket focusing on local server
-                        val client = SimpleClient(URI(String.format("ws://%s:%d", "localhost", 42000)), null)
+                        val client = SimpleClient(URI(String.format("ws://%s:%d", "localhost", 42000)), this@GomokuGame)
 
                         // connect to passed connection
                         client.connect()
@@ -90,8 +91,6 @@ class GomokuGame(
 
                         // close connection by sending goodbye to server
                         client.closeSession()
-
-                        parentView.sendMessage("Gespeichert", "Spielergebnis auf Server gespeichert")
 
                     } catch (exception : Exception) {
                         exception.printStackTrace()
@@ -456,5 +455,29 @@ class GomokuGame(
         var max = 0
         listOfLinks.forEach { item -> if (item.from.color == currentPlayer.color && item.length > max) max = item.length }
         return max
+    }
+
+    override fun onPingResponse(ping : Long) {
+        // no pinging from this view
+    }
+
+    /**
+     * This function is called when the pushed history was saved.
+     *
+     * @author Markus Thielker
+     *
+     * */
+    override fun onHistorySaved() {
+        parentView.sendMessage("Gespeichert", "Spielergebnis auf Server gespeichert")
+    }
+
+    /**
+     * This function is called when the pushed history was not saved.
+     *
+     * @author Markus Thielker
+     *
+     * */
+    override fun onHistoryNotSaved() {
+        parentView.sendMessage("Fehler", "Das Spielergebnis konnte nicht gespeichert werden")
     }
 }
