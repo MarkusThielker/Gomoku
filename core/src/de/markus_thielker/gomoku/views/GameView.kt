@@ -68,7 +68,7 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
     private lateinit var btnBackToMenu : TextButton
 
     // grid dimensions
-    private val gridSize = 15
+    val gridSize = 15
     private val padding = 100f
     private val lineWidth = 5f
 
@@ -160,7 +160,10 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
 
             activeStage = stageOver
             Gdx.input.inputProcessor = stageOver
-            lblGameOver.setText("${gameplay.winnerPlayer.name} has won the game!")
+
+            // check if win or tie
+            if (gameplay.winnerPlayer != null) lblGameOver.setText("${gameplay.winnerPlayer!!.name} has won the game!")
+
             gamePaused = true
 
         } else {
@@ -378,7 +381,7 @@ class GameView(val application : Application, var config : GomokuConfiguration, 
         val stage = Stage()
 
         // create winner label
-        lblGameOver = Label("${gameplay.winnerPlayer.name} won the game!", application.skin)
+        lblGameOver = Label("It's a tie! Click \"Rematch\" to play again.", application.skin)
         lblGameOver.apply {
             setPosition((Gdx.graphics.width).toFloat() / 2, (Gdx.graphics.height).toFloat() / 2 + 20, Align.center)
         }

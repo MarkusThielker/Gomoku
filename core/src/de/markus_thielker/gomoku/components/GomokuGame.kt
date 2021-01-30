@@ -26,7 +26,7 @@ class GomokuGame(
     private val listOfLinks = ArrayList<GomokuFieldConnection>()
 
     var gameOver = false
-    var winnerPlayer : GomokuPlayer
+    var winnerPlayer : GomokuPlayer? = null
 
     var currentPlayer : GomokuPlayer
     var round = 1
@@ -39,7 +39,6 @@ class GomokuGame(
 
         // set current and winning player
         currentPlayer = playerOne!!
-        winnerPlayer = playerOne!!
     }
 
     /**
@@ -114,6 +113,8 @@ class GomokuGame(
                 if (currentPlayer == playerOne) playerTwo!!.updateState(arrayOf(-1, -1), -1, false)
                 else playerOne!!.updateState(arrayOf(-1, -1), -y, false)
             }
+
+            if ((playerOne!!.placed + playerTwo!!.placed) == parentView.gridSize * parentView.gridSize) gameOver = true
 
             // switch turn
             switchTurn()
