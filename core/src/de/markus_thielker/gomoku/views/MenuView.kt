@@ -1,7 +1,6 @@
 package de.markus_thielker.gomoku.views
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -24,7 +23,7 @@ import java.net.URI
  * @author Markus Thielker
  *
  */
-class MenuView(private val application : Application) : ScreenAdapter() {
+class MenuView(private val application : Application) : ApplicationView() {
 
     private lateinit var stageMenu : Stage
 

@@ -120,7 +120,7 @@ class GomokuGame(
             switchTurn()
 
         } else {
-            parentView.showMessage("Error", "On this field is already a stone placed.")
+            parentView.sendMessage("Error", "On this field is already a stone placed.")
         }
     }
 

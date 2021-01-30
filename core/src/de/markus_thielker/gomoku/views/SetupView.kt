@@ -1,7 +1,6 @@
 package de.markus_thielker.gomoku.views
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -23,7 +22,7 @@ import de.markus_thielker.gomoku.components.GomokuOpening
  * @author Markus Thielker
  *
  */
-class SetupView(private val application : Application) : ScreenAdapter() {
+class SetupView(private val application : Application) : ApplicationView() {
 
     private lateinit var stageSetup : Stage
 
