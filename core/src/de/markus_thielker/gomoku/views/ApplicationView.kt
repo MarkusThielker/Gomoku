@@ -75,6 +75,9 @@ abstract class ApplicationView : ScreenAdapter() {
             // show dialog
             dialog.show(stage)
 
+            dialog.isMovable = false
+            dialog.isModal = false
+
             dialog.width = 500f
             dialog.height = 60f
 
