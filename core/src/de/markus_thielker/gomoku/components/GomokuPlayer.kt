@@ -47,9 +47,4 @@ class GomokuPlayer(val name : String, var color : GomokuFieldColor) {
             }; return
         }
     }
-
-    // TODO: remove debugging function
-    override fun toString() : String {
-        return "$name has $color stones and placed $placed stones yet (max: $maximum - wins: $wins - streak: $streak)"
-    }
 }
