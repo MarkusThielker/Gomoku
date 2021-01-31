@@ -47,4 +47,17 @@ class GomokuPlayer(val name : String, var color : GomokuFieldColor) {
             }; return
         }
     }
+
+    /**
+     * This function is called when an rematch is started to clear the stats.
+     *
+     * @author Markus Thielker
+     *
+     * */
+    fun clearStats() {
+
+        placed = 0
+        stones = mapOf()
+        maximum = 0
+    }
 }

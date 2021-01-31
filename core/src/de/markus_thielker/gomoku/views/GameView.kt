@@ -367,6 +367,9 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
             addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
 
+                    gameplay.playerOne.clearStats()
+                    gameplay.playerTwo.clearStats()
+
                     // TODO: implement confirmation dialog
                     application.screen = GameView(application, opening, gameplay.playerOne, gameplay.playerTwo)
                 }
@@ -426,6 +429,9 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
 
                     gameplay.playerOne.color = GomokuFieldColor.Black
                     gameplay.playerTwo.color = GomokuFieldColor.White
+
+                    gameplay.playerOne.clearStats()
+                    gameplay.playerTwo.clearStats()
 
                     application.screen = GameView(application, opening, gameplay.playerOne, gameplay.playerTwo)
                 }
