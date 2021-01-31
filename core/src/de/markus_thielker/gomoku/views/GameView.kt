@@ -60,6 +60,7 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
     private lateinit var dialogPause : Dialog
     private lateinit var lblPauseHeading : Label
     private lateinit var btnPauseContinue : TextButton
+    private lateinit var btnPauseRestart : TextButton
     private lateinit var btnPauseBack : TextButton
 
     // widgets for game over screen
@@ -341,7 +342,7 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
         lblPauseHeading = Label("Pause", application.skin)
         lblPauseHeading.apply {
             style = generateLabelStyle(text.toString(), bold = true)
-            setPosition(dialog.width / 2, dialog.height / 2 + 30, Align.center)
+            setPosition(dialog.width / 2, dialog.height / 2 + 60, Align.center)
         }
 
         // create pause dialog continue button
@@ -349,10 +350,25 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
         btnPauseContinue.apply {
             label.style = generateLabelStyle(text.toString())
             setSize(200f, 30f)
-            setPosition(dialog.width / 2, dialog.height / 2 - 10, Align.center)
+            setPosition(dialog.width / 2, dialog.height / 2 + 20, Align.center)
             addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
                     switchPause()
+                }
+            })
+        }
+
+        // create pause dialog restart button
+        btnPauseRestart = TextButton("Spiel neustarten", application.skin)
+        btnPauseRestart.apply {
+            label.style = generateLabelStyle(text.toString())
+            setSize(200f, 30f)
+            setPosition(dialog.width / 2, dialog.height / 2 - 20, Align.center)
+            addListener(object : ClickListener() {
+                override fun clicked(event : InputEvent, x : Float, y : Float) {
+
+                    // TODO: implement confirmation dialog
+                    application.screen = GameView(application, opening, gameplay.playerOne, gameplay.playerTwo)
                 }
             })
         }
@@ -362,7 +378,7 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
         btnPauseBack.apply {
             label.style = generateLabelStyle(text.toString())
             setSize(200f, 30f)
-            setPosition(dialog.width / 2, dialog.height / 2 - 50, Align.center)
+            setPosition(dialog.width / 2, dialog.height / 2 - 60, Align.center)
             addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
                     application.screen = MenuView(application)
@@ -373,6 +389,7 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
         // add widgets to dialog
         dialog.contentTable.addActor(lblPauseHeading)
         dialog.contentTable.addActor(btnPauseContinue)
+        dialog.contentTable.addActor(btnPauseRestart)
         dialog.contentTable.addActor(btnPauseBack)
 
         return dialog
