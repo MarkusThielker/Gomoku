@@ -2,8 +2,11 @@ package de.markus_thielker.gomoku.components
 
 import de.markus_thielker.gomoku.Application
 import de.markus_thielker.gomoku.socket.SimpleClient
+import de.markus_thielker.gomoku.socket.TestServer
 import de.markus_thielker.gomoku.views.GameView
+import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.net.InetSocketAddress
 import java.net.URI
 
 class SimpleClientTest {
@@ -11,28 +14,41 @@ class SimpleClientTest {
     @Test
     fun pushHistoryTest() {
 
+        val address = "localhost"
+        val port = 42005
+
+        val server = TestServer(InetSocketAddress(address, port))
+        server.start()
+
+        Thread.sleep(500)
+
         val opening = GomokuOpening.Standard
         val p1 = GomokuPlayer("Player 1", GomokuFieldColor.Black)
         val p2 = GomokuPlayer("Player 2", GomokuFieldColor.White)
 
-        val game = GomokuGame(GameView(Application(), opening, p1, p2), opening, p1, p2)
+        val gameView = GameView(Application(), opening, p1, p2)
+
+        val game = GomokuGame(gameView, opening, p1, p2)
 
         // create client socket focusing on local server
-        val client = SimpleClient(URI(String.format("ws://%s:%d", "localhost", 42000)), game)
+        val client = SimpleClient(URI(String.format("ws://%s:%d", address, port)), game)
 
         // connect to passed connection
         client.connect()
 
         Thread.sleep(500)
 
-        // get winner and push to server
-        client.pushMatchResult("player1", "player2", true, false)
+        client.pushMatchResult(p1.name, p2.name, playerOneWinner = true, playerTwoWinner = false)
 
         // timeout to ensure connection
         Thread.sleep(500)
 
         // close connection by sending goodbye to server
         client.closeSession()
+
+        Thread.sleep(500)
+
+        assertTrue(server.connectionOpened && server.connectionClosed && server.messagesReceived.isNotEmpty())
     }
 
     @Test
