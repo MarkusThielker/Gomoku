@@ -403,7 +403,28 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
             setPosition(dialog.width / 2, dialog.height / 2 - 60, Align.center)
             addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
-                    application.screen = MenuView(application)
+
+                    // create dialog with result callback
+                    val confirmationDialog = object : Dialog("Zurück zum Menü?", application.skin) {
+
+                        // execute on result selected
+                        override fun result(result : Any) {
+
+                            // differentiate selections
+                            if (result as Boolean) {
+                                application.screen = MenuView(application)
+                            } else {
+                                this.hide()
+                            }
+                        }
+                    }
+
+                    // add buttons to dialog
+                    confirmationDialog.button("Zum Menü", true)
+                    confirmationDialog.button("Abbrechen", false)
+
+                    // show dialog on UI
+                    showDialog(confirmationDialog)
                 }
             })
         }
