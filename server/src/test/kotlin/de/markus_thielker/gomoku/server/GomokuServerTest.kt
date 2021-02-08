@@ -9,6 +9,7 @@ import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.URI
 import java.net.URISyntaxException
+import java.sql.Timestamp
 
 class GomokuServerTest {
 
@@ -25,7 +26,7 @@ class GomokuServerTest {
      * @throws InterruptedException
      * @throws URISyntaxException
      *
-     * @author Dennis Jehle
+     * @author Dennis Jehle, converted to kotlin by Markus Thielker
      */
     @Test
     @Throws(IOException::class, InterruptedException::class, URISyntaxException::class)
@@ -55,7 +56,7 @@ class GomokuServerTest {
      * @throws InterruptedException
      * @throws IOException
      *
-     * @author Dennis Jehle
+     * @author Dennis Jehle, converted to kotlin by Markus Thielker
      */
     @Test
     @Throws(URISyntaxException::class, InterruptedException::class, IOException::class)
@@ -86,13 +87,50 @@ class GomokuServerTest {
     }
 
     /**
+     * This test is used to check if the server send a PingResponse message after receiving the PingRequest
+     * This test also checks if the initial timestamp gets returned as well.
+     *
+     * @throws URISyntaxException
+     * @throws InterruptedException
+     * @throws IOException
+     *
+     * @author Markus Thielker
+     */
+    @Test
+    @Throws(URISyntaxException::class, InterruptedException::class, IOException::class)
+    fun sendPingRequest() {
+        val gson = Gson()
+        val hostname = "localhost"
+        val port = 42002
+        val serverUri = URI(String.format("ws://%s:%d", hostname, port))
+        val server : WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
+        server.isReuseAddr = true
+        server.isTcpNoDelay = true
+        server.start()
+        Thread.sleep(DELAY_TIME_MILLISECONDS.toLong())
+        val testClient = TestClient(serverUri)
+        testClient.connect()
+        Thread.sleep(DELAY_TIME_MILLISECONDS.toLong())
+        assertEquals(true, testClient.connection_opened)
+        val pingRequestJson = gson.toJson(PingRequest(Timestamp(System.currentTimeMillis())))
+        testClient.send(pingRequestJson)
+        Thread.sleep(DELAY_TIME_MILLISECONDS.toLong())
+        assert(0 != testClient.messages_received.size)
+        val answer : String = testClient.messages_received.poll()
+        val pingResponse = gson.fromJson(answer, PingResponse::class.java)
+        assert(pingResponse.timestamp != null)
+        testClient.close()
+        server.stop()
+    }
+
+    /**
      * This test is used to check if the server handles a valid HistoryPush message correctly.
      *
      * @throws URISyntaxException
      * @throws InterruptedException
      * @throws IOException
      *
-     * @author Dennis Jehle
+     * @author Dennis Jehle, converted to kotlin by Markus Thielker
      */
     @Test
     @Throws(URISyntaxException::class, InterruptedException::class, IOException::class)
@@ -135,7 +173,7 @@ class GomokuServerTest {
      * @throws InterruptedException
      * @throws IOException
      *
-     * @author Dennis Jehle
+     * @author Dennis Jehle, converted to kotlin by Markus Thielker
      */
     @Test
     @Throws(URISyntaxException::class, InterruptedException::class, IOException::class)
@@ -182,7 +220,7 @@ class GomokuServerTest {
      * @throws InterruptedException
      * @throws IOException
      *
-     * @author Dennis Jehle
+     * @author Dennis Jehle, converted to kotlin by Markus Thielker
      */
     @Test
     @Throws(URISyntaxException::class, InterruptedException::class, IOException::class)
@@ -234,7 +272,7 @@ class GomokuServerTest {
      * @throws InterruptedException
      * @throws IOException
      *
-     * @author Dennis Jehle
+     * @author Dennis Jehle, converted to kotlin by Markus Thielker
      */
     @Test
     @Throws(URISyntaxException::class, InterruptedException::class, IOException::class)
@@ -298,7 +336,7 @@ class GomokuServerTest {
      * @throws InterruptedException
      * @throws IOException
      *
-     * @author Dennis Jehle
+     * @author Dennis Jehle, converted to kotlin by Markus Thielker
      */
     @Test
     @Throws(URISyntaxException::class, InterruptedException::class, IOException::class)
