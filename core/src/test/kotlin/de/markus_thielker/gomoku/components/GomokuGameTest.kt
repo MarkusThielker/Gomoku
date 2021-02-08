@@ -2,7 +2,6 @@ package de.markus_thielker.gomoku.components
 
 import de.markus_thielker.gomoku.Application
 import de.markus_thielker.gomoku.views.GameView
-import junit.framework.TestCase.assertTrue
 import org.junit.Test
 
 class GomokuGameTest {
@@ -18,7 +17,7 @@ class GomokuGameTest {
 
         game.stonePlaced(1, 1)
 
-        assertTrue(game.board[1][1]!!.color == GomokuFieldColor.Black)
+        assert(game.board[1][1]!!.color == p1.color)
     }
 
     @Test
