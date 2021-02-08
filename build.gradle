@@ -51,6 +51,8 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
         api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
         implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2"
+
+        testCompile "junit:junit:4.12"
     }
 }
 
