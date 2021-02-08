@@ -370,8 +370,27 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
                     gameplay.playerOne.clearStats()
                     gameplay.playerTwo.clearStats()
 
-                    // TODO: implement confirmation dialog
-                    application.screen = GameView(application, opening, gameplay.playerOne, gameplay.playerTwo)
+                    // create dialog with result callback
+                    val confirmationDialog = object : Dialog("Runde neu starten?", application.skin) {
+
+                        // execute on result selected
+                        override fun result(result : Any) {
+
+                            // differentiate selections
+                            if (result as Boolean) {
+                                application.screen = GameView(application, opening, gameplay.playerOne, gameplay.playerTwo)
+                            } else {
+                                this.hide()
+                            }
+                        }
+                    }
+
+                    // add buttons to dialog
+                    confirmationDialog.button("Neustarten", true)
+                    confirmationDialog.button("Abbrechen", false)
+
+                    // show dialog on UI
+                    showDialog(confirmationDialog)
                 }
             })
         }
@@ -470,8 +489,8 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
     fun showDialog(dialog : Dialog) {
 
         // pause game (stop input | no dialog)
-        gamePaused = !gamePaused
-        btnGamePause.isVisible = !btnGamePause.isVisible
+        gamePaused = true
+        btnGamePause.isVisible = false
 
         // show dialog
         dialog.show(activeStage)
