@@ -11,9 +11,4 @@ package de.markus_thielker.gomoku.components
  * @author Markus Thielker
  *
  * */
-class GomokuFieldConnection(var from : GomokuField, var to : GomokuField, var length : Int, var dir : GomokuFieldDirection) {
-
-    override fun toString() : String {
-        return "from: $from -> to: $to with length $length"
-    }
-}
+data class GomokuFieldConnection(var from : GomokuField, var to : GomokuField, var length : Int, var dir : GomokuFieldDirection)
