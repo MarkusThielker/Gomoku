@@ -99,8 +99,6 @@ class SimpleClient(server_uri : URI?, private val networkController : NetworkCon
      */
     override fun onMessage(message : String) {
 
-        // TODO: handle negative and missing feedback
-
         try {
 
             // extract message
@@ -191,8 +189,6 @@ class SimpleClient(server_uri : URI?, private val networkController : NetworkCon
         // 'debug' output
         println("match result pushed")
     }
-
-    // TODO: add history pull function
 
     /**
      * This method is called if the WebSocketServer send a binary message to the client.
