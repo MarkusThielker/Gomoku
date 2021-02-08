@@ -359,7 +359,7 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
         }
 
         // create pause dialog restart button
-        btnPauseRestart = TextButton("Spiel neustarten", application.skin)
+        btnPauseRestart = TextButton("Runde neustarten", application.skin)
         btnPauseRestart.apply {
             label.style = generateLabelStyle(text.toString())
             setSize(200f, 30f)
