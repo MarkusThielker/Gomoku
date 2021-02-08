@@ -36,7 +36,7 @@ class GomokuPlayer(val name : String, var color : GomokuFieldColor) {
         if (position[0] >= 0) stones = stones + Pair(++placed, position)
 
         // update the longest line found
-        if (maximum > 0) maximum = longestLine
+        if (longestLine > 0) maximum = longestLine
 
         // case: game ended -> update win and streak count
         won?.let {
