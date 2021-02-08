@@ -367,9 +367,6 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
             addListener(object : ClickListener() {
                 override fun clicked(event : InputEvent, x : Float, y : Float) {
 
-                    gameplay.playerOne.clearStats()
-                    gameplay.playerTwo.clearStats()
-
                     // create dialog with result callback
                     val confirmationDialog = object : Dialog("Runde neu starten?", application.skin) {
 
@@ -378,6 +375,9 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
 
                             // differentiate selections
                             if (result as Boolean) {
+                                gameplay.playerOne.clearStats()
+                                gameplay.playerTwo.clearStats()
+
                                 application.screen = GameView(application, opening, gameplay.playerOne, gameplay.playerTwo)
                             } else {
                                 this.hide()
