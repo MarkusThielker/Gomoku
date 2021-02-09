@@ -12,10 +12,10 @@ import java.net.URI
 class SimpleClientTest {
 
     @Test
-    fun pushHistoryTest() {
+    fun pushHistorySuccessTest() {
 
         val address = "localhost"
-        val port = 42005
+        val port = 42001
 
         val server = TestServer(InetSocketAddress(address, port))
         server.start()
@@ -48,14 +48,54 @@ class SimpleClientTest {
 
         Thread.sleep(500)
 
-        assertTrue(server.connectionOpened && server.connectionClosed && server.messagesReceived.isNotEmpty())
+        assertTrue(server.connectionOpened && server.connectionClosed && !server.exceptionOccurred && server.historySaved)
+    }
+
+    @Test
+    fun pushHistoryErrorTest() {
+
+        val address = "localhost"
+        val port = 42002
+
+        val server = TestServer(InetSocketAddress(address, port))
+        server.start()
+
+        Thread.sleep(500)
+
+        val opening = GomokuOpening.Standard
+        val p1 = GomokuPlayer("Player 1", GomokuFieldColor.Black)
+        val p2 = GomokuPlayer("Player 2", GomokuFieldColor.White)
+
+        val gameView = GameView(Application(), opening, p1, p2)
+
+        val game = GomokuGame(gameView, opening, p1, p2)
+
+        // create client socket focusing on local server
+        val client = SimpleClient(URI(String.format("ws://%s:%d", address, port)), game)
+
+        // connect to passed connection
+        client.connect()
+
+        Thread.sleep(500)
+
+        client.pushMatchResult(p1.name, p2.name, playerOneWinner = true, playerTwoWinner = true)
+
+        // timeout to ensure connection
+        Thread.sleep(500)
+
+        // close connection by sending goodbye to server
+        client.closeSession()
+
+        Thread.sleep(500)
+
+        assertTrue(server.connectionOpened && server.connectionClosed && !server.exceptionOccurred && server.historyNotSaved)
     }
 
     @Test
     fun sendPingTest() {
 
         val address = "localhost"
-        val port = 42002
+        val port = 42003
 
         val server = TestServer(InetSocketAddress(address, port))
         server.start()
@@ -86,6 +126,6 @@ class SimpleClientTest {
 
         Thread.sleep(1000)
 
-        assert(server.connectionOpened && server.connectionClosed && !server.exceptionOccurred && server.messagesReceived.isNotEmpty())
+        assert(server.connectionOpened && server.connectionClosed && !server.exceptionOccurred && server.pingRequested)
     }
 }
