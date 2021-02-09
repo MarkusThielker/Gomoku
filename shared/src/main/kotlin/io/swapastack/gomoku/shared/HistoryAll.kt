@@ -11,7 +11,7 @@ import java.util.*
 class HistoryAll {
 
     var messageType = MessageType.HistoryAll
-    var history : ArrayList<History>
+    var history : ArrayList<History> = ArrayList()
 
     /**
      * This method is used to populate the history ArrayList.
@@ -25,9 +25,5 @@ class HistoryAll {
      */
     fun appendEntry(playerOneName : String, playerTwoName : String, playerOneWinner : Boolean, playerTwoWinner : Boolean) {
         history.add(History(playerOneName, playerTwoName, playerOneWinner, playerTwoWinner))
-    }
-
-    init {
-        history = ArrayList()
     }
 }

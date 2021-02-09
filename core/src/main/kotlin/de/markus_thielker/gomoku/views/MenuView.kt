@@ -1,3 +1,5 @@
+@file:Suppress("DuplicatedCode")
+
 package de.markus_thielker.gomoku.views
 
 import com.badlogic.gdx.Gdx

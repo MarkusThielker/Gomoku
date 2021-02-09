@@ -22,8 +22,6 @@ class TestServer(address : InetSocketAddress?) : WebSocketServer(address) {
 
     private val legalUserIds : ArrayList<UUID> = ArrayList()
 
-    private val historyStore : ArrayList<History> = ArrayList()
-
     init {
         this.isTcpNoDelay = true
     }

@@ -14,24 +14,25 @@ import java.util.*
  */
 class TestClient(server_uri : URI?) : WebSocketClient(server_uri) {
 
-    var messages_received : Queue<String> = ArrayDeque()
-    var connection_opened = false
-    var connection_closed = false
-    var exception_occured = false
+    var messagesReceived : Queue<String> = ArrayDeque()
+    var connectionOpened = false
+    var connectionClosed = false
+    var exceptionOccurred = false
+
     override fun onOpen(handshakedata : ServerHandshake) {
-        connection_opened = true
+        connectionOpened = true
     }
 
     override fun onMessage(message : String) {
-        messages_received.add(message)
+        messagesReceived.add(message)
     }
 
     override fun onClose(code : Int, reason : String, remote : Boolean) {
-        connection_closed = true
+        connectionClosed = true
     }
 
     override fun onError(ex : Exception) {
-        exception_occured = true
+        exceptionOccurred = true
     }
 
     init {
