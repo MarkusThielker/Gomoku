@@ -191,6 +191,8 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
             val mouseX = Gdx.input.x
             val mouseY = Gdx.input.y
 
+            // Lines 196 - 214
+            // The calculation procedure to get the point, closest to the mouse was inspired by Merten Dieckman
             var minDist = sqrt((mouseX - cornerTL) * (mouseX - cornerTL) + (mouseY - padding) * (mouseY - padding))
             var minX = 0
             var minY = 0
