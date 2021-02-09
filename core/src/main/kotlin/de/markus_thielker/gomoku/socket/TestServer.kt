@@ -16,7 +16,11 @@ class TestServer(address : InetSocketAddress?) : WebSocketServer(address) {
     var connectionOpened = false
     var connectionClosed = false
     var exceptionOccurred = false
-    var serverStarted = false
+
+    var pingRequested = false
+    var historySaved = false
+    var historyNotSaved = false
+    var sessionClosed = false
 
     private val gson : Gson = Gson()
 
@@ -50,6 +54,8 @@ class TestServer(address : InetSocketAddress?) : WebSocketServer(address) {
 
                 val pingRequest : PingRequest = gson.fromJson(message, PingRequest::class.java)
 
+                pingRequested = true
+
                 // create new HelloServer message object
                 val response = PingResponse(pingRequest.timestamp)
 
@@ -67,15 +73,29 @@ class TestServer(address : InetSocketAddress?) : WebSocketServer(address) {
                 if (!legalUserIds.contains(historyPush.userId)) {
                     conn!!.close() // see class description
                 }
-                val historySaved = HistorySaved()
-                val historySavedJson : String = gson.toJson(historySaved)
-                conn!!.send(historySavedJson)
+
+                if (historyPush.playerOneName == "" || historyPush.playerTwoName == "" || historyPush.playerOneWinner && historyPush.playerTwoWinner) {
+                    historyNotSaved = true
+
+                    val historyNotSaved = HistoryNotSaved()
+                    val historyNotSavedJson : String = gson.toJson(historyNotSaved)
+                    conn!!.send(historyNotSavedJson)
+                } else {
+                    historySaved = true
+
+                    val historySaved = HistorySaved()
+                    val historySavedJson : String = gson.toJson(historySaved)
+                    conn!!.send(historySavedJson)
+                }
             }
             MessageType.GoodbyeServer -> {
                 val goodbyeServer : GoodbyeServer = gson.fromJson(message, GoodbyeServer::class.java)
                 if (!legalUserIds.contains(goodbyeServer.userId)) {
                     conn!!.close() // see class description
                 }
+
+                sessionClosed = true
+
                 val goodbyeClient = GoodbyeClient("Servus!")
                 val goodbyeClientJson : String = gson.toJson(goodbyeClient)
                 conn!!.send(goodbyeClientJson)
@@ -88,7 +108,5 @@ class TestServer(address : InetSocketAddress?) : WebSocketServer(address) {
         exceptionOccurred = true
     }
 
-    override fun onStart() {
-        serverStarted = true
-    }
+    override fun onStart() {}
 }
