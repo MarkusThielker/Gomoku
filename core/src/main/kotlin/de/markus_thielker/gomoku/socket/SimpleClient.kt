@@ -162,6 +162,12 @@ class SimpleClient(server_uri : URI?, private val networkController : NetworkCon
 
         // 'debug' output
         println("web socket client session closed")
+
+        Thread.sleep(30000)
+
+        if (connection.isOpen) {
+            connection.close()
+        }
     }
 
     /**
