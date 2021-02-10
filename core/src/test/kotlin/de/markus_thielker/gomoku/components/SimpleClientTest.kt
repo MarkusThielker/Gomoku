@@ -128,4 +128,37 @@ class SimpleClientTest {
 
         assert(server.connectionOpened && server.connectionClosed && !server.exceptionOccurred && server.pingRequested)
     }
+
+    @Test
+    fun autoDisconnectionTest() {
+
+        val address = "localhost"
+        val port = 42004
+
+        val server = TestServer(InetSocketAddress(address, port))
+        server.start()
+
+        server.forceTimeout = true
+
+        Thread.sleep(500)
+
+        val opening = GomokuOpening.Standard
+        val p1 = GomokuPlayer("Player 1", GomokuFieldColor.Black)
+        val p2 = GomokuPlayer("Player 2", GomokuFieldColor.White)
+
+        val game = GomokuGame(GameView(Application(), opening, p1, p2), opening, p1, p2)
+
+        // create client socket focusing on local server
+        val client = SimpleClient(URI(String.format("ws://%s:%d", address, port)), game)
+
+        // connect to passed connection
+        client.connect()
+
+        Thread.sleep(500)
+
+        // close connection by sending goodbye to server
+        client.closeSession()
+
+        assert(server.connectionOpened && !server.exceptionOccurred && server.sessionClosed && client.connectionTimeout)
+    }
 }

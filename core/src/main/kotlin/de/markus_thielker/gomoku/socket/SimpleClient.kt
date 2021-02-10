@@ -33,6 +33,8 @@ class SimpleClient(server_uri : URI?, private val networkController : NetworkCon
 
     private lateinit var uuid : UUID
 
+    var connectionTimeout = false
+
     /**
      * This method is called if the connection to the WebSocketServer is open.
      *
@@ -163,9 +165,16 @@ class SimpleClient(server_uri : URI?, private val networkController : NetworkCon
         // 'debug' output
         println("web socket client session closed")
 
+        // wait timout length
         Thread.sleep(30000)
 
+        // check if connection is still active
         if (connection.isOpen) {
+
+            // set that connection timed out
+            connectionTimeout = true
+
+            // close connection
             connection.close()
         }
     }

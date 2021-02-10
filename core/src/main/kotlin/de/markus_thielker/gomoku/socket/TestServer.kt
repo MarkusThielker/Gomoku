@@ -17,6 +17,8 @@ class TestServer(address : InetSocketAddress?) : WebSocketServer(address) {
     var connectionClosed = false
     var exceptionOccurred = false
 
+    var forceTimeout = false
+
     var pingRequested = false
     var historySaved = false
     var historyNotSaved = false
@@ -96,10 +98,12 @@ class TestServer(address : InetSocketAddress?) : WebSocketServer(address) {
 
                 sessionClosed = true
 
-                val goodbyeClient = GoodbyeClient("Servus!")
-                val goodbyeClientJson : String = gson.toJson(goodbyeClient)
-                conn!!.send(goodbyeClientJson)
-                conn.close() // see network standard
+                if (!forceTimeout) {
+                    val goodbyeClient = GoodbyeClient("Servus!")
+                    val goodbyeClientJson : String = gson.toJson(goodbyeClient)
+                    conn!!.send(goodbyeClientJson)
+                    conn.close() // see network standard
+                }
             }
         }
     }
