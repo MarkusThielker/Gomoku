@@ -387,9 +387,20 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
                         }
                     }
 
+                    confirmationDialog.apply {
+                        titleLabel.style = generateLabelStyle("Runde neu starten?")
+                    }
+
                     // add buttons to dialog
-                    confirmationDialog.button("Neustarten", true)
-                    confirmationDialog.button("Abbrechen", false)
+                    val btnSelectionTrue = TextButton("Neustarten", application.skin).apply {
+                        label.style = generateLabelStyle("Neustarten")
+                    }
+                    confirmationDialog.button(btnSelectionTrue, true)
+
+                    val btnSelectionFalse = TextButton("Abbrechen", application.skin).apply {
+                        label.style = generateLabelStyle("Abbrechen")
+                    }
+                    confirmationDialog.button(btnSelectionFalse, false)
 
                     // show dialog on UI
                     showDialog(confirmationDialog)
@@ -421,9 +432,20 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
                         }
                     }
 
+                    confirmationDialog.apply {
+                        titleLabel.style = generateLabelStyle("Zurück zum Menü?")
+                    }
+
                     // add buttons to dialog
-                    confirmationDialog.button("Zum Menü", true)
-                    confirmationDialog.button("Abbrechen", false)
+                    val btnSelectionTrue = TextButton("Zum Menü", application.skin).apply {
+                        label.style = generateLabelStyle("Zum Menü")
+                    }
+                    confirmationDialog.button(btnSelectionTrue, true)
+
+                    val btnSelectionFalse = TextButton("Abbrechen", application.skin).apply {
+                        label.style = generateLabelStyle("Abbrechen")
+                    }
+                    confirmationDialog.button(btnSelectionFalse, false)
 
                     // show dialog on UI
                     showDialog(confirmationDialog)

@@ -1,6 +1,7 @@
 package de.markus_thielker.gomoku.components
 
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import de.markus_thielker.gomoku.socket.NetworkController
 import de.markus_thielker.gomoku.socket.SimpleClient
 import de.markus_thielker.gomoku.views.GameView
@@ -404,9 +405,18 @@ class GomokuGame(
                         }
 
                         // add buttons to dialog
-                        dialog.button("Weiße Steine spielen", 1)
-                        dialog.button("Schwarze Steine spielen", 2)
-                        dialog.button("Der Gegner entscheidet", 3)
+                        val btnSelectionOne = TextButton("Weiße Steine spielen", parentView.application.skin).apply {
+                            label.style = parentView.generateLabelStyle("Weiße Steine spielen")
+                        }
+                        dialog.button(btnSelectionOne, 1)
+                        val btnSelectionTwo = TextButton("Schwarze Steine spielen", parentView.application.skin).apply {
+                            label.style = parentView.generateLabelStyle("Schwarze Steine spielen")
+                        }
+                        dialog.button(btnSelectionTwo, 2)
+                        val btnSelectionThree = TextButton("Gegner entscheidet", parentView.application.skin).apply {
+                            label.style = parentView.generateLabelStyle("Gegner entscheidet")
+                        }
+                        dialog.button(btnSelectionThree, 3)
 
                         // show dialog on UI
                         parentView.showDialog(dialog)
