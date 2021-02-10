@@ -9,16 +9,25 @@ import org.java_websocket.server.WebSocketServer
 import java.net.InetSocketAddress
 import java.util.*
 
-
+/**
+ * This class was created for testing the simple client. It returns feedback to the client where needed and
+ * records it's behavior and events by setting flag variables for later test evaluation.
+ *
+ * @author Markus Thielker
+ *
+ * */
 class TestServer(address : InetSocketAddress?) : WebSocketServer(address) {
 
+    // flag variables for server actions
     var messagesReceived : Queue<String> = ArrayDeque()
     var connectionOpened = false
     var connectionClosed = false
     var exceptionOccurred = false
 
+    // variable to force timout by not responding
     var forceTimeout = false
 
+    // flag variables for received messages
     var pingRequested = false
     var historySaved = false
     var historyNotSaved = false
@@ -32,14 +41,17 @@ class TestServer(address : InetSocketAddress?) : WebSocketServer(address) {
         this.isTcpNoDelay = true
     }
 
+    /** When the server connection is build up, the flag variable is set to true */
     override fun onOpen(conn : WebSocket?, handshake : ClientHandshake?) {
         connectionOpened = true
     }
 
+    /** When the server connection is closed, the flag variable is set to true */
     override fun onClose(conn : WebSocket?, code : Int, reason : String?, remote : Boolean) {
         connectionClosed = true
     }
 
+    /** In this function, incoming messages are handled */
     override fun onMessage(conn : WebSocket?, message : String?) {
         messagesReceived.add(message)
 
@@ -108,6 +120,7 @@ class TestServer(address : InetSocketAddress?) : WebSocketServer(address) {
         }
     }
 
+    /** In case that an error occurs, the flag variable is set to true */
     override fun onError(conn : WebSocket?, ex : Exception?) {
         exceptionOccurred = true
     }

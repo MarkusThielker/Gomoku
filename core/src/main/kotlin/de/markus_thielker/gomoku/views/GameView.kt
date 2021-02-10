@@ -146,7 +146,7 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
     /**
      * Automatic lifecycle call for rendering the view. Called multiple times per second.
      *
-     * @author Markus Thielker
+     * @author Markus Thielker, partially inspired by Merten Dieckmann
      *
      * */
     override fun render(delta : Float) {

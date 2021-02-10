@@ -8,10 +8,15 @@ package de.markus_thielker.gomoku.components
  * */
 class GomokuField(val pos : Array<Int>, var color : GomokuFieldColor) {
 
+    // map containing all connections
     val con = HashMap<GomokuFieldDirection, GomokuField?>()
+
+    // map containing the length for each connection
     val conLen = HashMap<GomokuFieldDirection, Int>()
 
     init {
+
+        // set default values
         conLen[GomokuFieldDirection.Horizontal] = 1
         conLen[GomokuFieldDirection.Vertical] = 1
         conLen[GomokuFieldDirection.DiagonalTLBR] = 1

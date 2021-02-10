@@ -23,7 +23,10 @@ class GomokuGame(
     var playerTwo : GomokuPlayer
 ) : NetworkController {
 
+    // two-dimensional array for stones with default value null
     val board : Array<Array<GomokuField?>> = Array(15) { Array(15) { null } }
+
+    // array list containing all connections with length > 2
     private val listOfLinks = ArrayList<GomokuFieldConnection>()
 
     var gameOver = false
@@ -44,17 +47,19 @@ class GomokuGame(
      * */
     fun stonePlaced(x : Int, y : Int) {
 
+        // check if position is empty
         if (board[x][y] == null) {
 
             // set clicked field to players color
             board[x][y] = GomokuField(arrayOf(x, y), currentPlayer.color)
 
-            // update node  states
+            // update node states
             trace(board[x][y]!!, GomokuFieldDirection.Horizontal)
             trace(board[x][y]!!, GomokuFieldDirection.Vertical)
             trace(board[x][y]!!, GomokuFieldDirection.DiagonalTLBR)
             trace(board[x][y]!!, GomokuFieldDirection.DiagonalBLTR)
 
+            // print field information
             board[x][y]!!.printField()
 
             // evaluate if new stone leads to a winner
@@ -105,12 +110,15 @@ class GomokuGame(
                 else playerOne.updateState(arrayOf(-1, -1), -y, false)
             }
 
+            // check for tie
             if ((playerOne.placed + playerTwo.placed) == parentView.gridSize * parentView.gridSize) gameOver = true
 
             // switch turn
             switchTurn()
 
         } else {
+
+            // show message for blocked field
             parentView.sendMessage("Fehler", "Auf diesem Feld liegt bereits ein Stein")
         }
     }
@@ -187,6 +195,7 @@ class GomokuGame(
 
         // if both are valid -> stones placed in middle
         if (oneValid && twoValid) doubleConnection(one, two, dir)
+        // else placed at the end of a connection
         else {
             if (oneValid) singleConnection(mid, one!!, dir)
             if (twoValid) singleConnection(mid, two!!, dir)

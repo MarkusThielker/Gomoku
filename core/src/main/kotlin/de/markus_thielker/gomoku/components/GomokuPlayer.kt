@@ -41,8 +41,10 @@ class GomokuPlayer(val name : String, var color : GomokuFieldColor) {
         // case: game ended -> update win and streak count
         won?.let {
             if (won) {
+                // increase streak and win count
                 wins++; streak++
             } else {
+                // reset streak to zero
                 streak = 0
             }; return
         }
