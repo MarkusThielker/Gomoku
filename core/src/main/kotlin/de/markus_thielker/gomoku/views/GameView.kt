@@ -520,7 +520,7 @@ class GameView(val application : Application, var opening : GomokuOpening, playe
 
         // resize dialog size
         dialog.height = 60f
-        dialog.width = 400f
+        dialog.width = 650f
 
         // reposition dialog
         dialog.setPosition((Gdx.graphics.width / 2).toFloat(), 40f, Align.center)
