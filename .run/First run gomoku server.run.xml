@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="First run gomoku server" type="JetRunConfigurationType">
+    <option name="MAIN_CLASS_NAME" value="de.markus_thielker.gomoku.server.GomokuServer" />
+    <module name="Gomoku.server.main" />
+    <shortenClasspath name="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
