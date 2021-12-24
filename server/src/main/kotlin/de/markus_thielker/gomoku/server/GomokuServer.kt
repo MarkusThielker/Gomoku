@@ -98,13 +98,13 @@ class GomokuServer(address : InetSocketAddress?) : WebSocketServer(address) {
 
                     val pingRequest : PingRequest = gson.fromJson(message, PingRequest::class.java)
 
-                    // create new HelloServer message object
-                    val response = PingResponse(pingRequest.timestamp)
+                    // create new PingResponse message object
+                    val response = PingResponse(pingRequest.startTime)
 
-                    // create JSON String from HelloServer message object
+                    // create JSON String from PingResponse message object
                     val responseJSON : String = gson.toJson(response)
 
-                    // send JSON encoded HelloServer message as String to the connected WebSocket server
+                    // send JSON encoded PingResponse message as String to the connected WebSocket server
                     conn.send(responseJSON)
 
                     // 'debug' output
@@ -180,8 +180,8 @@ class GomokuServer(address : InetSocketAddress?) : WebSocketServer(address) {
      * @param exception [Exception]
      * @author Dennis Jehle
      */
-    override fun onError(conn : WebSocket, exception : Exception) {
-        System.err.println("an error occurred on connection " + conn.remoteSocketAddress.toString() + ":" + exception)
+    override fun onError(conn : WebSocket?, exception : Exception) {
+        System.err.println("an error occurred on connection " + conn?.remoteSocketAddress.toString() + ":" + exception)
     }
 
     /**

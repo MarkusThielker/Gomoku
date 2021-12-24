@@ -1,8 +1,14 @@
 package io.swapastack.gomoku.shared
 
-import java.sql.Timestamp
-
-class PingResponse(var timestamp : Timestamp) {
+/**
+ * The server answers with this message, when a ping request is send.
+ *
+ * @param startTime The time in milliseconds, passed in the PingRequest
+ *
+ * @author Markus Thielker
+ *
+ * */
+class PingResponse(var startTime: Long) {
 
     var messageType = MessageType.PingResponse
 }

@@ -71,7 +71,7 @@ class TestServer(address : InetSocketAddress?) : WebSocketServer(address) {
                 pingRequested = true
 
                 // create new HelloServer message object
-                val response = PingResponse(pingRequest.timestamp)
+                val response = PingResponse(pingRequest.startTime)
 
                 // create JSON String from HelloServer message object
                 val responseJSON : String = gson.toJson(response)
@@ -117,6 +117,7 @@ class TestServer(address : InetSocketAddress?) : WebSocketServer(address) {
                     conn.close() // see network standard
                 }
             }
+            else -> {}
         }
     }
 

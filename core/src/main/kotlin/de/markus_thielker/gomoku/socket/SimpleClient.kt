@@ -67,7 +67,7 @@ class SimpleClient(server_uri : URI?, private val networkController : NetworkCon
     fun requestPing() {
 
         // create new PingRequest message object
-        val message = PingRequest(Timestamp(System.currentTimeMillis()))
+        val message = PingRequest()
 
         // create JSON String from PingRequest message object
         val messageJSON : String = gson.toJson(message)
@@ -118,7 +118,7 @@ class SimpleClient(server_uri : URI?, private val networkController : NetworkCon
                 // on PingResponse -> notify NetworkController
                 MessageType.PingResponse -> {
                     val pingResponse : PingResponse = gson.fromJson(message, PingResponse::class.java)
-                    networkController!!.onPingResponse(Timestamp(System.currentTimeMillis()).time - pingResponse.timestamp.time)
+                    networkController!!.onPingResponse(System.currentTimeMillis() - pingResponse.startTime)
                 }
 
                 // on HistorySaved -> notify Listener
