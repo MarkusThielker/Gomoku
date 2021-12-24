@@ -9,7 +9,6 @@ import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.URI
 import java.net.URISyntaxException
-import java.sql.Timestamp
 
 class GomokuServerTest {
 
@@ -34,7 +33,7 @@ class GomokuServerTest {
         val hostname = "localhost"
         val port = 42001
         val serverUri = URI(String.format("ws://%s:%d", hostname, port))
-        val server : WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
+        val server: WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
         server.isReuseAddr = true
         server.isTcpNoDelay = true
         server.start()
@@ -65,7 +64,7 @@ class GomokuServerTest {
         val hostname = "localhost"
         val port = 42002
         val serverUri = URI(String.format("ws://%s:%d", hostname, port))
-        val server : WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
+        val server: WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
         server.isReuseAddr = true
         server.isTcpNoDelay = true
         server.start()
@@ -78,7 +77,7 @@ class GomokuServerTest {
         testClient.send(helloServerJson)
         Thread.sleep(DELAY_TIME_MILLISECONDS.toLong())
         assert(0 != testClient.messagesReceived.size)
-        val answer : String = testClient.messagesReceived.poll()
+        val answer: String = testClient.messagesReceived.poll()
         val welcomeClient = gson.fromJson(answer, WelcomeClient::class.java)
         assert(null != welcomeClient.userId)
         assert(welcomeClient.welcomeMessage == "Moin!")
@@ -103,7 +102,7 @@ class GomokuServerTest {
         val hostname = "localhost"
         val port = 42002
         val serverUri = URI(String.format("ws://%s:%d", hostname, port))
-        val server : WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
+        val server: WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
         server.isReuseAddr = true
         server.isTcpNoDelay = true
         server.start()
@@ -116,7 +115,7 @@ class GomokuServerTest {
         testClient.send(pingRequestJson)
         Thread.sleep(DELAY_TIME_MILLISECONDS.toLong())
         assert(0 != testClient.messagesReceived.size)
-        val answer : String = testClient.messagesReceived.poll()
+        val answer: String = testClient.messagesReceived.poll()
         val pingResponse = gson.fromJson(answer, PingResponse::class.java)
         assert(pingResponse.startTime > 0)
         testClient.close()
@@ -139,7 +138,7 @@ class GomokuServerTest {
         val hostname = "localhost"
         val port = 42003
         val serverUri = URI(String.format("ws://%s:%d", hostname, port))
-        val server : WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
+        val server: WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
         server.isReuseAddr = true
         server.isTcpNoDelay = true
         server.start()
@@ -152,7 +151,7 @@ class GomokuServerTest {
         testClient.send(helloServerJson)
         Thread.sleep(DELAY_TIME_MILLISECONDS.toLong())
         assert(1 == testClient.messagesReceived.size)
-        val answer : String = testClient.messagesReceived.poll()
+        val answer: String = testClient.messagesReceived.poll()
         val welcomeClient = gson.fromJson(answer, WelcomeClient::class.java)
         val userId = welcomeClient.userId
         val historyPush = HistoryPush(userId, "Hubert", "Helga", playerOneWinner = false, playerTwoWinner = true)
@@ -160,7 +159,7 @@ class GomokuServerTest {
         testClient.send(historyPushJson)
         Thread.sleep(DELAY_TIME_MILLISECONDS.toLong())
         assert(1 == testClient.messagesReceived.size)
-        val historySaved : HistorySaved = gson.fromJson(testClient.messagesReceived.poll(), HistorySaved::class.java)
+        val historySaved: HistorySaved = gson.fromJson(testClient.messagesReceived.poll(), HistorySaved::class.java)
         assert(historySaved.messageType === MessageType.HistorySaved)
         testClient.close()
         server.stop()
@@ -182,7 +181,7 @@ class GomokuServerTest {
         val hostname = "localhost"
         val port = 42004
         val serverUri = URI(String.format("ws://%s:%d", hostname, port))
-        val server : WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
+        val server: WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
         server.isReuseAddr = true
         server.isTcpNoDelay = true
         server.start()
@@ -195,7 +194,7 @@ class GomokuServerTest {
         testClient.send(helloServerJson)
         Thread.sleep(DELAY_TIME_MILLISECONDS.toLong())
         assert(1 == testClient.messagesReceived.size)
-        val answer : String = testClient.messagesReceived.poll()
+        val answer: String = testClient.messagesReceived.poll()
         val welcomeClient = gson.fromJson(answer, WelcomeClient::class.java)
         assert(null != welcomeClient.userId)
         val userId = welcomeClient.userId
@@ -206,7 +205,8 @@ class GomokuServerTest {
         testClient.send(historyPushJson)
         Thread.sleep(DELAY_TIME_MILLISECONDS.toLong())
         assert(1 == testClient.messagesReceived.size)
-        val historyNotSaved : HistoryNotSaved = gson.fromJson(testClient.messagesReceived.poll(), HistoryNotSaved::class.java)
+        val historyNotSaved: HistoryNotSaved =
+            gson.fromJson(testClient.messagesReceived.poll(), HistoryNotSaved::class.java)
         assert(historyNotSaved.messageType === MessageType.HistoryNotSaved)
         testClient.close()
         server.stop()
@@ -229,7 +229,7 @@ class GomokuServerTest {
         val hostname = "localhost"
         val port = 42005
         val serverUri = URI(String.format("ws://%s:%d", hostname, port))
-        val server : WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
+        val server: WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
         server.isReuseAddr = true
         server.isTcpNoDelay = true
         server.start()
@@ -242,7 +242,7 @@ class GomokuServerTest {
         testClient.send(helloServerJson)
         Thread.sleep(500)
         assert(1 == testClient.messagesReceived.size)
-        val answer : String = testClient.messagesReceived.poll()
+        val answer: String = testClient.messagesReceived.poll()
         val welcomeClient = gson.fromJson(answer, WelcomeClient::class.java)
         assert(null != welcomeClient.userId)
         val userId = welcomeClient.userId
@@ -255,9 +255,9 @@ class GomokuServerTest {
         testClient.send(historyPush2Json)
         Thread.sleep(DELAY_TIME_MILLISECONDS.toLong())
         assert(2 == testClient.messagesReceived.size)
-        val history1Saved : HistorySaved = gson.fromJson(testClient.messagesReceived.poll(), HistorySaved::class.java)
+        val history1Saved: HistorySaved = gson.fromJson(testClient.messagesReceived.poll(), HistorySaved::class.java)
         assert(history1Saved.messageType === MessageType.HistorySaved)
-        val history2Saved : HistorySaved = gson.fromJson(testClient.messagesReceived.poll(), HistorySaved::class.java)
+        val history2Saved: HistorySaved = gson.fromJson(testClient.messagesReceived.poll(), HistorySaved::class.java)
         assert(history2Saved.messageType === MessageType.HistorySaved)
         testClient.close()
         server.stop()
@@ -281,7 +281,7 @@ class GomokuServerTest {
         val hostname = "localhost"
         val port = 42006
         val serverUri = URI(String.format("ws://%s:%d", hostname, port))
-        val server : WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
+        val server: WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
         server.isReuseAddr = true
         server.isTcpNoDelay = true
         server.start()
@@ -294,7 +294,7 @@ class GomokuServerTest {
         testClient.send(helloServerJson)
         Thread.sleep(DELAY_TIME_MILLISECONDS.toLong())
         assert(1 == testClient.messagesReceived.size)
-        val answer : String = testClient.messagesReceived.poll()
+        val answer: String = testClient.messagesReceived.poll()
         val welcomeClient = gson.fromJson(answer, WelcomeClient::class.java)
         assert(null != welcomeClient.userId)
         val userId = welcomeClient.userId
@@ -307,16 +307,16 @@ class GomokuServerTest {
         testClient.send(historyPush2Json)
         Thread.sleep(DELAY_TIME_MILLISECONDS.toLong())
         assert(2 == testClient.messagesReceived.size)
-        val history1Saved : HistorySaved = gson.fromJson(testClient.messagesReceived.poll(), HistorySaved::class.java)
+        val history1Saved: HistorySaved = gson.fromJson(testClient.messagesReceived.poll(), HistorySaved::class.java)
         assert(history1Saved.messageType === MessageType.HistorySaved)
-        val history2Saved : HistorySaved = gson.fromJson(testClient.messagesReceived.poll(), HistorySaved::class.java)
+        val history2Saved: HistorySaved = gson.fromJson(testClient.messagesReceived.poll(), HistorySaved::class.java)
         assert(history2Saved.messageType === MessageType.HistorySaved)
         val historyGetAll = HistoryGetAll(userId)
         val historyGetAllJson = gson.toJson(historyGetAll)
         testClient.send(historyGetAllJson)
         Thread.sleep(DELAY_TIME_MILLISECONDS.toLong())
         assert(1 == testClient.messagesReceived.size)
-        val historyAll : HistoryAll = gson.fromJson(testClient.messagesReceived.poll(), HistoryAll::class.java)
+        val historyAll: HistoryAll = gson.fromJson(testClient.messagesReceived.poll(), HistoryAll::class.java)
         assert(historyAll.history[0].playerOneName == "Hubert")
         assert(historyAll.history[0].playerTwoName == "Helga")
         assert(historyAll.history[0].playerOneWinner)
@@ -345,7 +345,7 @@ class GomokuServerTest {
         val hostname = "localhost"
         val port = 42007
         val serverUri = URI(String.format("ws://%s:%d", hostname, port))
-        val server : WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
+        val server: WebSocketServer = GomokuServer(InetSocketAddress(hostname, port))
         server.isReuseAddr = true
         server.isTcpNoDelay = true
         server.start()
@@ -358,7 +358,7 @@ class GomokuServerTest {
         testClient.send(helloServerJson)
         Thread.sleep(DELAY_TIME_MILLISECONDS.toLong())
         assert(1 == testClient.messagesReceived.size)
-        val answer : String = testClient.messagesReceived.poll()
+        val answer: String = testClient.messagesReceived.poll()
         val welcomeClient = gson.fromJson(answer, WelcomeClient::class.java)
         assert(null != welcomeClient.userId)
         val userId = welcomeClient.userId
@@ -367,7 +367,7 @@ class GomokuServerTest {
         testClient.send(goodbyeServerJson)
         Thread.sleep(DELAY_TIME_MILLISECONDS.toLong())
         assert(1 == testClient.messagesReceived.size)
-        val goodbyeClient : GoodbyeClient = gson.fromJson(testClient.messagesReceived.poll(), GoodbyeClient::class.java)
+        val goodbyeClient: GoodbyeClient = gson.fromJson(testClient.messagesReceived.poll(), GoodbyeClient::class.java)
         assert(goodbyeClient.goodbyeMessage == "Servus!")
         assert(testClient.connectionClosed)
         testClient.close()

@@ -69,7 +69,7 @@ class GomokuServer(address : InetSocketAddress?) : WebSocketServer(address) {
      * @param code status code
      * @param reason String containing closing reason
      * @param remote close was initiated by remote client
-     * @author Dennis Jehle
+     * @author Dennis Jehle, converted to kotlin by Markus Thielker
      */
     override fun onClose(conn : WebSocket, code : Int, reason : String, remote : Boolean) {
         println("closed " + conn.remoteSocketAddress.toString() + " with exit code " + code.toString() + " additional info: " + reason)
@@ -81,7 +81,7 @@ class GomokuServer(address : InetSocketAddress?) : WebSocketServer(address) {
      *
      * @param conn [WebSocket]
      * @param message the String message, e.g. JSON String
-     * @author Dennis Jehle
+     * @author Dennis Jehle, converted to kotlin by Markus Thielker
      */
     override fun onMessage(conn : WebSocket, message : String?) {
         try {
